@@ -10,13 +10,11 @@
  |                                                                                    08/2003 |
  +============================================================================================*/
 
-
 //==============================================================================================
 // Include header files.
 // ---------------------------------------------------------------------------------------------
 #include "gs_demo.h"
 //==============================================================================================
-
 
 //==============================================================================================
 // Global variables.
@@ -24,11 +22,9 @@
 GS_Demo g_gsDemo;
 //==============================================================================================
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // CONSTRUCTOR & DESTRUCTOR ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 //==============================================================================================
 // GS_Demo::GS_Demo():
@@ -40,47 +36,47 @@ GS_Demo g_gsDemo;
 
 GS_Demo::GS_Demo() : GS_Application()
 {
-    m_gsSettings.nDisplayWidth   = -1;
-    m_gsSettings.nDisplayHeight  = -1;
-    m_gsSettings.nColorDepth     = -1;
-    m_gsSettings.bWindowedMode   = -1;
-    m_gsSettings.bEnableVSync    = -1;
+    m_gsSettings.nDisplayWidth = -1;
+    m_gsSettings.nDisplayHeight = -1;
+    m_gsSettings.nColorDepth = -1;
+    m_gsSettings.bWindowedMode = -1;
+    m_gsSettings.bEnableVSync = -1;
     m_gsSettings.bEnableAliasing = -1;
-    m_gsSettings.nMusicVolume    = -1;
-    m_gsSettings.nEffectsVolume  = -1;
+    m_gsSettings.nMusicVolume = -1;
+    m_gsSettings.nEffectsVolume = -1;
 
     for (int nLoop = 0; nLoop < MAX_SCORES; nLoop++)
     {
         lstrcpy(m_gsHiscores[nLoop].szName, "..........");
-        m_gsHiscores[nLoop].lScore  = 0l;
+        m_gsHiscores[nLoop].lScore = 0l;
     }
 
     m_nGameProgress = 0;
     m_nPrevProgress = 0;
     m_nNextProgress = 0;
 
-    m_bIsInitialized  = FALSE;
+    m_bIsInitialized = FALSE;
     m_bWasKeyReleased = FALSE;
     m_nOptionSelected = -1;
     m_nCounter = 0;
 
     m_fInterval = 0.0f;
-    m_fRotate   = 0.0f;
-    m_fScale    = 0.0f;
-    m_fAlpha    = 0.0f;
+    m_fRotate = 0.0f;
+    m_fScale = 0.0f;
+    m_fAlpha = 0.0f;
 
-    m_gsMenuTextColor.fRed   = 1.0f;
+    m_gsMenuTextColor.fRed = 1.0f;
     m_gsMenuTextColor.fGreen = 1.0f;
-    m_gsMenuTextColor.fBlue  = 1.0f;
+    m_gsMenuTextColor.fBlue = 1.0f;
     m_gsMenuTextColor.fAlpha = 0.3f;
 
-    m_gsMenuHighColor.fRed   = 1.0f;
+    m_gsMenuHighColor.fRed = 1.0f;
     m_gsMenuHighColor.fGreen = 1.0f;
-    m_gsMenuHighColor.fBlue  = 1.0f;
+    m_gsMenuHighColor.fBlue = 1.0f;
     m_gsMenuHighColor.fAlpha = 1.0f;
 
     m_nScoreIndex = 0;
-    m_lScore      = 0;
+    m_lScore = 0;
 
     m_nGameMode = GAME_MODE_NORMAL;
 
@@ -109,11 +105,9 @@ GS_Demo::~GS_Demo()
     // Does nothing at the moment.
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // GAME SETUP //////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 //==============================================================================================
 // GS_Demo::GameSetup():
@@ -142,23 +136,21 @@ BOOL GS_Demo::GameSetup()
         }
 
         // Set all other game settings to their defaults.
-        m_gsSettings.nDisplayWidth   = DEFAULT_WIDTH;
-        m_gsSettings.nDisplayHeight  = DEFAULT_HEIGHT;
-        m_gsSettings.nColorDepth     = DEFAULT_DEPTH;
-        m_gsSettings.bEnableVSync    = DEFAULT_VSYNC;
+        m_gsSettings.nDisplayWidth = DEFAULT_WIDTH;
+        m_gsSettings.nDisplayHeight = DEFAULT_HEIGHT;
+        m_gsSettings.nColorDepth = DEFAULT_DEPTH;
+        m_gsSettings.bEnableVSync = DEFAULT_VSYNC;
         m_gsSettings.bEnableAliasing = DEFAULT_ALIAS;
-        m_gsSettings.nMusicVolume    = DEFAULT_MUSIC;
-        m_gsSettings.nEffectsVolume  = DEFAULT_SOUND;
+        m_gsSettings.nMusicVolume = DEFAULT_MUSIC;
+        m_gsSettings.nEffectsVolume = DEFAULT_SOUND;
     }
 
     // Set the display mode
-    this->SetMode
-    (
+    this->SetMode(
         m_gsSettings.nDisplayWidth,
         m_gsSettings.nDisplayHeight,
         m_gsSettings.nColorDepth,
-        m_gsSettings.bWindowedMode
-    );
+        m_gsSettings.bWindowedMode);
 
     // Set render scaling values
     this->SetRenderScaling(this->GetWidth(), this->GetHeight(), true);
@@ -172,11 +164,9 @@ BOOL GS_Demo::GameSetup()
     return TRUE;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // INITIALIZE & SHUTDOWN ///////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 //==============================================================================================
 // GS_Demo::GameInit():
@@ -190,7 +180,7 @@ BOOL GS_Demo::GameInit()
 {
     // Seed the timer for random numbers.
     time_t t;
-    srand((unsigned) time(&t));
+    srand((unsigned)time(&t));
 
     // Setup the text for the window title bar.
     this->SetTitle("VineHero Concept Demo");
@@ -200,7 +190,7 @@ BOOL GS_Demo::GameInit()
     /////////////////////////////////////////////////////////////////////////////////////////////
 
     // Did we fail creating the OpenGL display?
-    if ( !m_gsDisplay.Create(this->GetDevice(), this->GetWidth(), this->GetHeight(), this->GetColorDepth()) )
+    if (!m_gsDisplay.Create(this->GetDevice(), this->GetWidth(), this->GetHeight(), this->GetColorDepth()))
     {
         GS_Error::Report("GS_DEMO.CPP", 186, "Failed to create OpenGL display!");
         return FALSE;
@@ -218,9 +208,22 @@ BOOL GS_Demo::GameInit()
     // Are we in fullscreen mode?
     // if (!this->IsWindowed())
     // {
-        // Hide the mouse cursor.
-        m_gsMouse.HideCursor(TRUE);
+    // Hide the mouse cursor.
+    m_gsMouse.HideCursor(TRUE);
     // }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    // Initialize Controller Input //////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Initialize controller input.
+    // (Controller auto-initializes in constructor, just log if connected)
+    if (m_gsController.GetConnectedCount() > 0)
+    {
+        char szDebugMsg[256];
+        sprintf(szDebugMsg, "Controller connected: %s\n", m_gsController.GetControllerName(0));
+        GS_Platform::OutputDebugString(szDebugMsg);
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     // Initialize The FMOD Sound System /////////////////////////////////////////////////////////
@@ -305,8 +308,8 @@ BOOL GS_Demo::GameInit()
 
     // Create a hero select menu using the "menu_01.tga" image and the font texture created earlier.
     bResult = m_gsHeroSelectMenu.Create("data/menu.tga", m_gsFontTexture.GetID(),
-                              m_gsFontTexture.GetWidth(), m_gsFontTexture.GetHeight(),
-                              20, 16, 16);
+                                        m_gsFontTexture.GetWidth(), m_gsFontTexture.GetHeight(),
+                                        20, 16, 16);
 
     // Were we not successful?
     if (FALSE == bResult)
@@ -315,41 +318,39 @@ BOOL GS_Demo::GameInit()
     }
 
     // Get randomised swing speed
-    m_vineLastSwingSpeed = rand()%(MAX_VINE_SPEED-MIN_VINE_SPEED) + MIN_VINE_SPEED;
+    m_vineLastSwingSpeed = rand() % (MAX_VINE_SPEED - MIN_VINE_SPEED) + MIN_VINE_SPEED;
 
     // Create the first vine
-    m_vines[0].Create
-    (
-        rand()%(MAX_VINE_ELEMENTS-MIN_VINE_ELEMENTS) + MIN_VINE_ELEMENTS, // number of elements
-        0,                      // start x
-        INTERNAL_RES_Y - 10,    // start y
-        m_vineLastSwingSpeed,   // swing speed
-        -1,                     // max amplitude of swing
-        -1,                     // min amplitude of swing
-        -1                      // swing width
+    m_vines[0].Create(
+        rand() % (MAX_VINE_ELEMENTS - MIN_VINE_ELEMENTS) + MIN_VINE_ELEMENTS, // number of elements
+        0,                                                                    // start x
+        INTERNAL_RES_Y - 10,                                                  // start y
+        m_vineLastSwingSpeed,                                                 // swing speed
+        -1,                                                                   // max amplitude of swing
+        -1,                                                                   // min amplitude of swing
+        -1                                                                    // swing width
     );
 
     // Create all additional vines
-    for( int nLoop = 1; nLoop < MAX_VINES; nLoop++)
+    for (int nLoop = 1; nLoop < MAX_VINES; nLoop++)
     {
         // Make certain the swing speed for the next vine is different
-        int newSwingSpeed = rand()%(MAX_VINE_SPEED-MIN_VINE_SPEED) + MIN_VINE_SPEED;
-        while( (newSwingSpeed > m_vineLastSwingSpeed - 5) && (newSwingSpeed < m_vineLastSwingSpeed + 5) )
+        int newSwingSpeed = rand() % (MAX_VINE_SPEED - MIN_VINE_SPEED) + MIN_VINE_SPEED;
+        while ((newSwingSpeed > m_vineLastSwingSpeed - 5) && (newSwingSpeed < m_vineLastSwingSpeed + 5))
         {
-            newSwingSpeed = rand()%(MAX_VINE_SPEED-MIN_VINE_SPEED) + MIN_VINE_SPEED;
+            newSwingSpeed = rand() % (MAX_VINE_SPEED - MIN_VINE_SPEED) + MIN_VINE_SPEED;
         }
         m_vineLastSwingSpeed = newSwingSpeed;
 
         // Create the vine
-        m_vines[nLoop].Create
-        (
-            rand()%(MAX_VINE_ELEMENTS-MIN_VINE_ELEMENTS) + MIN_VINE_ELEMENTS, // number of elements
-            INTERNAL_RES_X - (INTERNAL_RES_X / 2),  // start x
-            INTERNAL_RES_Y - 10,                    // start y
-            m_vineLastSwingSpeed,                   // swing speed
-            -1,                                     // max amplitude of swing
-            -1,                                     // min amplitude of swing
-            -1                                      // swing width
+        m_vines[nLoop].Create(
+            rand() % (MAX_VINE_ELEMENTS - MIN_VINE_ELEMENTS) + MIN_VINE_ELEMENTS, // number of elements
+            INTERNAL_RES_X - (INTERNAL_RES_X / 2),                                // start x
+            INTERNAL_RES_Y - 10,                                                  // start y
+            m_vineLastSwingSpeed,                                                 // swing speed
+            -1,                                                                   // max amplitude of swing
+            -1,                                                                   // min amplitude of swing
+            -1                                                                    // swing width
         );
     }
 
@@ -422,6 +423,9 @@ BOOL GS_Demo::GameShutdown()
     // Reset mouse data.
     m_gsMouse.Reset();
 
+    // Reset controller data.
+    m_gsController.Reset();
+
     // Destroy the OpenGL display.
     m_gsDisplay.Destroy();
 
@@ -431,11 +435,9 @@ BOOL GS_Demo::GameShutdown()
     return TRUE;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // FOCUS METHODS ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 //==============================================================================================
 // GS_Demo::GameRelease():
@@ -498,11 +500,9 @@ BOOL GS_Demo::GameRestore()
     return TRUE;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // THE GAME LOOP ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 //==============================================================================================
 // GS_Demo::GameLoop():
@@ -517,66 +517,64 @@ BOOL GS_Demo::GameLoop()
     // Run method depending on progress.
     switch (m_nGameProgress)
     {
-        // Game intro & outro methods.
-        case GAME_INTRO:
-            return GameIntro();
-        case GAME_OUTRO:
-            return GameOutro();
+    // Game intro & outro methods.
+    case GAME_INTRO:
+        return GameIntro();
+    case GAME_OUTRO:
+        return GameOutro();
 
-        // Title screen methods.
-        case TITLE_INTRO:
-            return TitleIntro();
-        case TITLE_SCREEN:
-            return TitleScreen();
-        case TITLE_OUTRO:
-            return TitleOutro();
+    // Title screen methods.
+    case TITLE_INTRO:
+        return TitleIntro();
+    case TITLE_SCREEN:
+        return TitleScreen();
+    case TITLE_OUTRO:
+        return TitleOutro();
 
-        // Option screen methods.
-        case OPTION_INTRO:
-            return OptionIntro();
-        case OPTION_SCREEN:
-            return OptionScreen();
-        case OPTION_OUTRO:
-            return OptionOutro();
+    // Option screen methods.
+    case OPTION_INTRO:
+        return OptionIntro();
+    case OPTION_SCREEN:
+        return OptionScreen();
+    case OPTION_OUTRO:
+        return OptionOutro();
 
-        // Game play methods.
-        case PLAY_INTRO:
-            return PlayIntro();
-        case PLAY_GAME:
-            return PlayGame();
-        case PLAY_UPDATE:
-            return PlayUpdate();
-        case PLAY_PAUSE:
-            return PlayPause();
-        case PLAY_EXIT:
-            return PlayExit();
-        case PLAY_OUTRO:
-            return PlayOutro();
+    // Game play methods.
+    case PLAY_INTRO:
+        return PlayIntro();
+    case PLAY_GAME:
+        return PlayGame();
+    case PLAY_UPDATE:
+        return PlayUpdate();
+    case PLAY_PAUSE:
+        return PlayPause();
+    case PLAY_EXIT:
+        return PlayExit();
+    case PLAY_OUTRO:
+        return PlayOutro();
 
-        // Hiscore methods.
-        case SCORES_INTRO:
-            return ScoresIntro();
-        case SCORES_VIEW:
-            return ScoresView();
-        case SCORES_ADD:
-            return ScoresAdd();
-        case SCORES_OUTRO:
-            return ScoresOutro();
+    // Hiscore methods.
+    case SCORES_INTRO:
+        return ScoresIntro();
+    case SCORES_VIEW:
+        return ScoresView();
+    case SCORES_ADD:
+        return ScoresAdd();
+    case SCORES_OUTRO:
+        return ScoresOutro();
 
-        // No valid progress?
-        default:
-            m_nGameProgress = GAME_OUTRO;
-            break;
+    // No valid progress?
+    default:
+        m_nGameProgress = GAME_OUTRO;
+        break;
     } // end switch
 
     return TRUE;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // MESSAGE HANDLING ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 //==============================================================================================
 // GS_Demo::OnChangeMode():
@@ -589,13 +587,11 @@ BOOL GS_Demo::GameLoop()
 void GS_Demo::OnChangeMode()
 {
     // Change to windowed or fullscreen mode as selected by the user
-    this->SetMode
-    (
+    this->SetMode(
         m_gsSettings.nDisplayWidth,
         m_gsSettings.nDisplayHeight,
         this->GetColorDepth(),
-        !this->IsWindowed()
-    );
+        !this->IsWindowed());
 
     // Set values for scaling
     this->SetRenderScaling(this->GetWidth(), this->GetHeight(), true);
@@ -711,6 +707,13 @@ LRESULT GS_Demo::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         m_gsKeyboard.KeyDown(wParam);
         // Add the key to the keyboard buffer.
         m_gsKeyboard.AddKeyToBuffer(wParam);
+
+        // Also add to controller buffer if it's a controller button
+        if (wParam >= GSC_BUTTON_A && wParam <= GSC_BUTTON_DPAD_RIGHT)
+        {
+            m_gsController.SetButtonDown(wParam);
+            m_gsController.AddButtonToBuffer(wParam);
+        }
         break;
 
     // Received when a nonsystem key is released. A nonsystem key is a key
@@ -718,6 +721,12 @@ LRESULT GS_Demo::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     case WM_KEYUP:
         // Mark the key that was released.
         m_gsKeyboard.KeyUp(wParam);
+
+        // Also add to controller buffer if it's a controller button
+        if (wParam >= GSC_BUTTON_A && wParam <= GSC_BUTTON_DPAD_RIGHT)
+        {
+            m_gsController.SetButtonUp(wParam);
+        }
         break;
 
     // Received when the user holds down the ALT key and then presses another key.
@@ -804,11 +813,9 @@ LRESULT GS_Demo::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return GS_Application::MsgProc(hWnd, uMsg, wParam, lParam);
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // INTRO & OUTRO METHODS ///////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 //==============================================================================================
 // GS_Demo::GameIntro():
@@ -843,10 +850,12 @@ BOOL GS_Demo::GameIntro()
     {
         // Initialize variables.
         m_fInterval = 0.0f;
-        m_nCounter  = 0;
-        m_fAlpha    = 0.0f;
+        m_nCounter = 0;
+        m_fAlpha = 0.0f;
         // Clear the keyboard buffer.
         m_gsKeyboard.ClearBuffer();
+        // Clear controller buffer.
+        m_gsController.ClearBuffer();
         // Where we want to go to next.
         m_nNextProgress = TITLE_INTRO;
         // Initialization completed.
@@ -915,13 +924,13 @@ BOOL GS_Demo::GameIntro()
 
     // Display a message centered in the screen.
     m_gsFont.SetText("LEXPRO UNDERGROUND");
-    m_gsFont.SetDestX((INTERNAL_RES_X -  m_gsFont.GetTextWidth()) / 2);
+    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth()) / 2);
     m_gsFont.SetDestY(((INTERNAL_RES_Y - m_gsFont.GetTextHeight()) / 2) +
                       m_gsFont.GetTextHeight());
     m_gsFont.Render();
 
     m_gsFont.SetText("PRESENTS");
-    m_gsFont.SetDestX((INTERNAL_RES_X -  m_gsFont.GetTextWidth()) / 2);
+    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth()) / 2);
     m_gsFont.SetDestY(((INTERNAL_RES_Y - m_gsFont.GetTextHeight()) / 2) -
                       m_gsFont.GetTextHeight());
     m_gsFont.Render();
@@ -989,10 +998,12 @@ BOOL GS_Demo::GameOutro()
     {
         // Clear the keyboard buffer.
         m_gsKeyboard.ClearBuffer();
+        // Clear controller buffer.
+        m_gsController.ClearBuffer();
         // Initialize method variables.
         m_fInterval = 0.0f;
-        m_nCounter  = 0;
-        m_fAlpha    = 1.0f;
+        m_nCounter = 0;
+        m_fAlpha = 1.0f;
         // Is the title music playing?
         if (m_gsSound.IsStreamPlaying())
         {
@@ -1002,7 +1013,6 @@ BOOL GS_Demo::GameOutro()
         // Initialization completed.
         m_bIsInitialized = TRUE;
     }
-
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     // Get Keyboard Input ///////////////////////////////////////////////////////////////////////
@@ -1062,64 +1072,64 @@ BOOL GS_Demo::GameOutro()
     // Display the game credits centered in the screen.
     m_gsFont.SetText("CREDITS");
     m_gsFont.SetScaleXY(2.0f, 2.0f);
-    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth())  / 2);
+    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth()) / 2);
     m_gsFont.SetDestY(432);
     m_gsFont.SetModulateColor(1.0f, 1.0f, 1.0f, m_fAlpha);
     m_gsFont.Render();
 
     m_gsFont.SetText("DEVELOPED BY");
     m_gsFont.SetScaleXY(1.0f, 1.0f);
-    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth())  / 2);
+    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth()) / 2);
     m_gsFont.SetDestY(384);
     m_gsFont.SetModulateColor(1.0f, 1.0f, 1.0f, m_fAlpha);
     m_gsFont.Render();
 
     m_gsFont.SetText("LEXPRO SYSTEMS");
-    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth())  / 2);
+    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth()) / 2);
     m_gsFont.SetDestY(352);
     m_gsFont.SetModulateColor(1.0f, 0.5f, 0.5f, m_fAlpha);
     m_gsFont.Render();
 
     m_gsFont.SetText("DEVEOLOPERS:");
-    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth())  / 2);
+    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth()) / 2);
     m_gsFont.SetDestY(304);
     m_gsFont.SetModulateColor(1.0f, 1.0f, 1.0f, m_fAlpha);
     m_gsFont.Render();
 
     m_gsFont.SetText("ANDRIES.....    BEN.........");
-    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth())  / 2);
+    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth()) / 2);
     m_gsFont.SetDestY(272);
     m_gsFont.SetModulateColor(1.0f, 0.5f, 0.5f, m_fAlpha);
     m_gsFont.Render();
 
     m_gsFont.SetText("ETIENNE.....    RUAN........");
-    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth())  / 2);
+    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth()) / 2);
     m_gsFont.SetDestY(240);
     m_gsFont.Render();
 
     m_gsFont.SetText("WILLIAM.....    ............");
-    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth())  / 2);
+    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth()) / 2);
     m_gsFont.SetDestY(208);
     m_gsFont.Render();
 
     m_gsFont.SetText("............    ............");
-    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth())  / 2);
+    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth()) / 2);
     m_gsFont.SetDestY(176);
     m_gsFont.Render();
 
     m_gsFont.SetText("............    ............");
-    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth())  / 2);
+    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth()) / 2);
     m_gsFont.SetDestY(144);
     m_gsFont.Render();
 
     m_gsFont.SetText("THANKS FOR PLAYING!");
-    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth())  / 2);
+    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth()) / 2);
     m_gsFont.SetDestY(80);
     m_gsFont.SetModulateColor(1.0f, 1.0f, 1.0f, m_fAlpha);
     m_gsFont.Render();
 
     m_gsFont.SetText("PRESS ANY KEY TO EXIT");
-    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth())  / 2);
+    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth()) / 2);
     m_gsFont.SetDestY(32);
     m_gsFont.SetModulateColor(1.0f, 1.0f, 1.0f, m_fAlpha);
     m_gsFont.Render();
@@ -1146,11 +1156,9 @@ BOOL GS_Demo::GameOutro()
     return TRUE;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // TITLE SCREEN METHODS ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 //==============================================================================================
 // GS_Demo::TitleIntro():
@@ -1184,7 +1192,7 @@ BOOL GS_Demo::TitleIntro()
     if (m_bIsInitialized == FALSE)
     {
         // Initialize method variables.
-        m_fAlpha    = 0.0f;
+        m_fAlpha = 0.0f;
         // Where we want to go to next.
         m_nNextProgress = TITLE_SCREEN;
         // Initialization completed.
@@ -1284,6 +1292,8 @@ BOOL GS_Demo::TitleScreen()
         m_fInterval = 0.0f;
         // Clear the keyboard buffer.
         m_gsKeyboard.ClearBuffer();
+        // Clear controller buffer.
+        m_gsController.ClearBuffer();
         // Setup variables for mouse input.
         m_nOldMouseX = m_gsMouse.GetX();
         m_nOldMouseY = m_gsMouse.GetY();
@@ -1321,6 +1331,7 @@ BOOL GS_Demo::TitleScreen()
     {
     // Was the up key pressed?
     case GSK_UP:
+    case GSC_BUTTON_DPAD_UP:
         // Highlight the previous option.
         m_gsMenu.HighlightPrev();
         // Play the appropriate sound effect.
@@ -1330,6 +1341,7 @@ BOOL GS_Demo::TitleScreen()
         break;
     // Was the down key pressed?
     case GSK_DOWN:
+    case GSC_BUTTON_DPAD_DOWN:
         // Highlight the next option.
         m_gsMenu.HighlightNext();
         // Play the appropriate sound effect.
@@ -1339,6 +1351,7 @@ BOOL GS_Demo::TitleScreen()
         break;
     // Was the enter key pressed?
     case GSK_ENTER:
+    case GSC_BUTTON_A:
         // Remeber which option is highlighted.
         m_nOptionSelected = m_gsMenu.GetHighlight();
         // Play the appropriate sound effect.
@@ -1348,6 +1361,7 @@ BOOL GS_Demo::TitleScreen()
         break;
     // Was the escape key pressed?
     case GSK_ESCAPE:
+    case GSC_BUTTON_B:
         // Have the quit option been highlighted?
         if (m_gsMenu.GetHighlight() == 3)
         {
@@ -1501,10 +1515,8 @@ BOOL GS_Demo::TitleScreen()
 
     // Position the title centered in the top half of the screen.
     m_gsTitleSprite.SetDestX((INTERNAL_RES_X - m_gsTitleSprite.GetScaledWidth()) / 2);
-    m_gsTitleSprite.SetDestY
-    (
-        (INTERNAL_RES_Y / 2) + (((INTERNAL_RES_Y / 2) - m_gsTitleSprite.GetScaledHeight()) / 2)
-    );
+    m_gsTitleSprite.SetDestY(
+        (INTERNAL_RES_Y / 2) + (((INTERNAL_RES_Y / 2) - m_gsTitleSprite.GetScaledHeight()) / 2));
 
     // Render the title images.
     // m_gsTitleSprite.Render();
@@ -1522,7 +1534,7 @@ BOOL GS_Demo::TitleScreen()
     m_gsFont.SetText("VERSION %s", VINE_HERO_VERSION);
     m_gsFont.SetScaleXY(0.5f, 0.5f);
     m_gsFont.SetDestX(INTERNAL_RES_X - m_gsFont.GetTextWidth() - m_gsFont.GetLetterWidth());
-    m_gsFont.SetDestY(m_gsFont.GetTextHeight()) ;
+    m_gsFont.SetDestY(m_gsFont.GetTextHeight());
     m_gsFont.Render();
 
     // Reset font scale and colors
@@ -1596,7 +1608,7 @@ BOOL GS_Demo::TitleOutro()
     if (m_bIsInitialized == FALSE)
     {
         // Initialize method variables.
-        m_fAlpha    = 1.0f;
+        m_fAlpha = 1.0f;
         // Initialization completed.
         m_bIsInitialized = TRUE;
     }
@@ -1657,11 +1669,9 @@ BOOL GS_Demo::TitleOutro()
     return TRUE;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // OPTION SCREEN METHODS ///////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 //==============================================================================================
 // GS_Demo::OptionIntro():
@@ -1775,7 +1785,7 @@ BOOL GS_Demo::OptionScreen()
     // Do Method Initialization /////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////
 
-    char cTempString[64] = { 0 };
+    char cTempString[64] = {0};
 
     BOOL bLeftPressed = TRUE;
 
@@ -1786,12 +1796,14 @@ BOOL GS_Demo::OptionScreen()
         m_nOptionSelected = -1;
         // Clear the keyboard buffer.
         m_gsKeyboard.ClearBuffer();
+        // Clear controller buffer.
+        m_gsController.ClearBuffer();
         // Setup variables for mouse input.
         m_nOldMouseX = m_gsMouse.GetX();
         m_nOldMouseY = m_gsMouse.GetY();
         m_bWasMouseReleased = FALSE;
         // Set the game settings to the current display settings.
-        m_gsSettings.bEnableVSync  = m_gsDisplay.IsVSyncEnabled();
+        m_gsSettings.bEnableVSync = m_gsDisplay.IsVSyncEnabled();
         m_gsSettings.bWindowedMode = this->IsWindowed();
         // Clear all current menu items.
         m_gsMenu.ClearOptions();
@@ -1846,18 +1858,21 @@ BOOL GS_Demo::OptionScreen()
     {
     // Was the up key pressed?
     case GSK_UP:
+    case GSC_BUTTON_DPAD_UP:
         // Highlight previous option.
         m_gsMenu.HighlightPrev();
         m_gsSound.PlaySample(SAMPLE_OPTION);
         break;
     // Was the down key pressed?
     case GSK_DOWN:
+    case GSC_BUTTON_DPAD_DOWN:
         // Highlight next option.
         m_gsMenu.HighlightNext();
         m_gsSound.PlaySample(SAMPLE_OPTION);
         break;
     // Was the left key pressed?
     case GSK_LEFT:
+    case GSC_BUTTON_DPAD_LEFT:
         // Is the last option not highlighted?
         if (m_gsMenu.GetHighlight() != 7)
         {
@@ -1869,6 +1884,7 @@ BOOL GS_Demo::OptionScreen()
         break;
     // Was the right key pressed?
     case GSK_RIGHT:
+    case GSC_BUTTON_DPAD_RIGHT:
         // Is the last option not highlighted?
         if (m_gsMenu.GetHighlight() != 7)
         {
@@ -1880,12 +1896,14 @@ BOOL GS_Demo::OptionScreen()
         break;
     // Was the enter key pressed?
     case GSK_ENTER:
+    case GSC_BUTTON_A:
         // Remeber which option is highlighted.
         m_nOptionSelected = m_gsMenu.GetHighlight();
         m_gsSound.PlaySample(SAMPLE_SELECT);
         break;
     // Was the escape key pressed?
     case GSK_ESCAPE:
+    case GSC_BUTTON_B:
         // Progress to the next section.
         m_nGameProgress = m_nNextProgress;
         m_gsSound.PlaySample(SAMPLE_SELECT);
@@ -2073,7 +2091,7 @@ BOOL GS_Demo::OptionScreen()
     this->RenderBackground(0.5f);
 
     // Position the menu centered horizontally and vertically in the screen.
-    m_gsMenu.SetDestX((INTERNAL_RES_X -  m_gsMenu.GetWidth()) / 2);
+    m_gsMenu.SetDestX((INTERNAL_RES_X - m_gsMenu.GetWidth()) / 2);
     m_gsMenu.SetDestY((INTERNAL_RES_Y - m_gsMenu.GetHeight()) / 2);
 
     // Render the menu using the specified colors.
@@ -2118,7 +2136,7 @@ BOOL GS_Demo::OptionScreen()
         this->SaveSettings();
 
         // Reset method variables.
-        m_bIsInitialized  = FALSE;
+        m_bIsInitialized = FALSE;
     }
 
     return TRUE;
@@ -2208,11 +2226,9 @@ BOOL GS_Demo::OptionOutro()
     return TRUE;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // GAME PLAY METHODS ///////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 //==============================================================================================
 // GS_Demo::PlayIntro():
@@ -2249,6 +2265,8 @@ BOOL GS_Demo::PlayIntro()
         m_nOptionSelected = -1;
         // Clear the keyboard buffer.
         m_gsKeyboard.ClearBuffer();
+        // Clear controller buffer.
+        m_gsController.ClearBuffer();
         // Setup variables for mouse input.
         m_nOldMouseX = m_gsMouse.GetX();
         m_nOldMouseY = m_gsMouse.GetY();
@@ -2305,8 +2323,9 @@ BOOL GS_Demo::PlayIntro()
     {
     // Was the left key pressed?
     case GSK_LEFT:
+    case GSC_BUTTON_DPAD_LEFT:
         // Select a different hero
-        if( m_hero.GetSelectedHero() == SELECT_HERO_JOHNNY )
+        if (m_hero.GetSelectedHero() == SELECT_HERO_JOHNNY)
         {
             // Re-create the hero
             m_hero.Create(SELECT_HERO_COURAGE, m_hero.GetDestX(), m_hero.GetDestX(), false);
@@ -2322,8 +2341,9 @@ BOOL GS_Demo::PlayIntro()
         break;
     // Was the right key pressed?
     case GSK_RIGHT:
+    case GSC_BUTTON_DPAD_RIGHT:
         // Select a different hero
-        if( m_hero.GetSelectedHero() == SELECT_HERO_JOHNNY )
+        if (m_hero.GetSelectedHero() == SELECT_HERO_JOHNNY)
         {
             // Re-create the hero
             m_hero.Create(SELECT_HERO_COURAGE, m_hero.GetDestX(), m_hero.GetDestX(), false);
@@ -2339,24 +2359,28 @@ BOOL GS_Demo::PlayIntro()
         break;
     // Was the up key pressed?
     case GSK_UP:
+    case GSC_BUTTON_DPAD_UP:
         // Highlight the previous option.
         m_gsMenu.HighlightPrev();
         m_gsSound.PlaySample(SAMPLE_OPTION);
         break;
     // Was the down key pressed?
     case GSK_DOWN:
+    case GSC_BUTTON_DPAD_DOWN:
         // Highlight the next option.
         m_gsMenu.HighlightNext();
         m_gsSound.PlaySample(SAMPLE_OPTION);
         break;
     // Was the enter key pressed?
     case GSK_ENTER:
+    case GSC_BUTTON_A:
         // Remeber which option is highlighted.
         m_nOptionSelected = m_gsMenu.GetHighlight();
         m_gsSound.PlaySample(SAMPLE_SELECT);
         break;
     // Was the escape key pressed?
     case GSK_ESCAPE:
+    case GSC_BUTTON_B:
         // Return to the title screen.
         m_nGameProgress = TITLE_INTRO;
         m_bWasKeyReleased = FALSE;
@@ -2432,7 +2456,7 @@ BOOL GS_Demo::PlayIntro()
         if (m_gsCollide.IsCoordInRect(m_gsMouse.GetX(), m_gsMouse.GetY(), rcOption))
         {
             // Select a different hero
-            if( m_hero.GetSelectedHero() == SELECT_HERO_JOHNNY )
+            if (m_hero.GetSelectedHero() == SELECT_HERO_JOHNNY)
             {
                 // Re-create the hero
                 m_hero.Create(SELECT_HERO_COURAGE, m_hero.GetDestX(), m_hero.GetDestX(), false);
@@ -2461,7 +2485,7 @@ BOOL GS_Demo::PlayIntro()
             if (m_gsCollide.IsCoordInRect(m_gsMouse.GetX(), m_gsMouse.GetY(), rcOption))
             {
                 // Select a different hero
-                if( m_hero.GetSelectedHero() == SELECT_HERO_JOHNNY )
+                if (m_hero.GetSelectedHero() == SELECT_HERO_JOHNNY)
                 {
                     // Re-create the hero
                     m_hero.Create(SELECT_HERO_COURAGE, 0, 0, false);
@@ -2553,11 +2577,9 @@ BOOL GS_Demo::PlayIntro()
     m_gsDisplay.BeginRender2D(this->GetWindow());
 
     // Center the hero select menu horizontally and in the top two thirds of the screen
-    m_gsHeroSelectMenu.SetDestX((INTERNAL_RES_X - m_gsHeroSelectMenu.GetWidth())  / 2);
-    m_gsHeroSelectMenu.SetDestY
-    (
-        INTERNAL_RES_Y / 3 + ((INTERNAL_RES_Y * (2.0f/3.0f)) - m_gsHeroSelectMenu.GetHeight()) / 2
-    );
+    m_gsHeroSelectMenu.SetDestX((INTERNAL_RES_X - m_gsHeroSelectMenu.GetWidth()) / 2);
+    m_gsHeroSelectMenu.SetDestY(
+        INTERNAL_RES_Y / 3 + ((INTERNAL_RES_Y * (2.0f / 3.0f)) - m_gsHeroSelectMenu.GetHeight()) / 2);
 
     // Render the menu to the back surface using the specified colors.
     m_gsHeroSelectMenu.Render(m_gsMenuTextColor, m_gsMenuHighColor);
@@ -2565,15 +2587,13 @@ BOOL GS_Demo::PlayIntro()
     // Display the selected hero centered in the menu (minus the menu title)
     RECT optionRect;
     m_gsHeroSelectMenu.GetOptionRect(0, &optionRect);
-    m_hero.SetPosition
-    (
+    m_hero.SetPosition(
         m_gsHeroSelectMenu.GetDestX() + ((m_gsHeroSelectMenu.GetWidth() - m_hero.GetWidth()) / 2),
-        m_gsHeroSelectMenu.GetDestY() + ((m_gsHeroSelectMenu.GetHeight() - ((optionRect.top - optionRect.bottom) * 2) - m_hero.GetHeight() ) / 2)
-    );
+        m_gsHeroSelectMenu.GetDestY() + ((m_gsHeroSelectMenu.GetHeight() - ((optionRect.top - optionRect.bottom) * 2) - m_hero.GetHeight()) / 2));
     m_hero.Render();
 
     // Center the menu horizontally and vertically underneath the hero select menu
-    m_gsMenu.SetDestX((INTERNAL_RES_X - m_gsMenu.GetWidth())  / 2);
+    m_gsMenu.SetDestX((INTERNAL_RES_X - m_gsMenu.GetWidth()) / 2);
     m_gsMenu.SetDestY((m_gsHeroSelectMenu.GetDestY() - m_gsMenu.GetHeight()) / 2);
 
     // Render the menu to the back surface using the specified colors.
@@ -2598,7 +2618,7 @@ BOOL GS_Demo::PlayIntro()
         // Remember where we've come from.
         m_nPrevProgress = PLAY_INTRO;
         // Reset method variables.
-        m_bIsInitialized  = FALSE;
+        m_bIsInitialized = FALSE;
         // Re-create the hero as a filtered sprite for better rotation and scaling
         m_hero.Create(m_hero.GetSelectedHero(), m_hero.GetDestX(), m_hero.GetDestX(), true);
         // Are we about to start playing the game?
@@ -2608,7 +2628,6 @@ BOOL GS_Demo::PlayIntro()
             m_gsSound.PlayStream(MUSIC_GAME, m_gsSettings.nMusicVolume);
         }
     }
-
 
     return TRUE;
 }
@@ -2623,7 +2642,7 @@ BOOL GS_Demo::PlayIntro()
 
 BOOL GS_Demo::PlayGame()
 {
-    int keyList[1] = { GSK_SPACE };
+    int keyList[1] = {GSK_SPACE};
 
     // Has the display not been initialized?
     if (!this->m_gsDisplay.IsReady())
@@ -2651,47 +2670,45 @@ BOOL GS_Demo::PlayGame()
         // Reset class variables.
         m_nPrevProgress = PLAY_GAME;
         m_fInterval = 0.0f;
-        m_nCounter  = 0;
+        m_nCounter = 0;
         m_lScore = 0;
 
         // Reset vine swing speed
-        m_vineLastSwingSpeed = rand()%(m_nMaxVineSpeed-m_nMinVineSpeed) + m_nMinVineSpeed;
+        m_vineLastSwingSpeed = rand() % (m_nMaxVineSpeed - m_nMinVineSpeed) + m_nMinVineSpeed;
 
         // Create the first vine at the edge of the screen
-        m_vines[0].Create
-        (
-            rand()%(m_nMaxVineElements-m_nMinVineElements) + m_nMinVineElements, // number of elements
-            0, // start x
-            INTERNAL_RES_Y - 10,  // start y
-            m_vineLastSwingSpeed, // swing speed
-            -1, // max amplitude of swing
-            -1, // min amplitude of swing
-            -1  // swing width
+        m_vines[0].Create(
+            rand() % (m_nMaxVineElements - m_nMinVineElements) + m_nMinVineElements, // number of elements
+            0,                                                                       // start x
+            INTERNAL_RES_Y - 10,                                                     // start y
+            m_vineLastSwingSpeed,                                                    // swing speed
+            -1,                                                                      // max amplitude of swing
+            -1,                                                                      // min amplitude of swing
+            -1                                                                       // swing width
         );
 
         float lastVinePosX = m_vines[0].GetDestX();
 
         // Create all additional vines
-        for( int nLoop = 1; nLoop < MAX_VINES; nLoop++)
+        for (int nLoop = 1; nLoop < MAX_VINES; nLoop++)
         {
             // Make certain the swing speed for the next vine is different
-            int newSwingSpeed = rand()%(MAX_VINE_SPEED-MIN_VINE_SPEED) + MIN_VINE_SPEED;
-            while( (newSwingSpeed > m_vineLastSwingSpeed - 5) && (newSwingSpeed < m_vineLastSwingSpeed + 5) )
+            int newSwingSpeed = rand() % (MAX_VINE_SPEED - MIN_VINE_SPEED) + MIN_VINE_SPEED;
+            while ((newSwingSpeed > m_vineLastSwingSpeed - 5) && (newSwingSpeed < m_vineLastSwingSpeed + 5))
             {
-                newSwingSpeed = rand()%(MAX_VINE_SPEED-MIN_VINE_SPEED) + MIN_VINE_SPEED;
+                newSwingSpeed = rand() % (MAX_VINE_SPEED - MIN_VINE_SPEED) + MIN_VINE_SPEED;
             }
             m_vineLastSwingSpeed = newSwingSpeed;
 
             // Create the vine
-            m_vines[nLoop].Create
-            (
-                rand()%(MAX_VINE_ELEMENTS-MIN_VINE_ELEMENTS) + MIN_VINE_ELEMENTS, // number of elements
-                lastVinePosX + float((float)INTERNAL_RES_X / (float)MAX_VINES),   // start x
-                INTERNAL_RES_Y - 10,            // start y
-                m_vineLastSwingSpeed,           // swing speed
-                -1,                             // max amplitude of swing
-                -1,                             // min amplitude of swing
-                -1                              // swing width
+            m_vines[nLoop].Create(
+                rand() % (MAX_VINE_ELEMENTS - MIN_VINE_ELEMENTS) + MIN_VINE_ELEMENTS, // number of elements
+                lastVinePosX + float((float)INTERNAL_RES_X / (float)MAX_VINES),       // start x
+                INTERNAL_RES_Y - 10,                                                  // start y
+                m_vineLastSwingSpeed,                                                 // swing speed
+                -1,                                                                   // max amplitude of swing
+                -1,                                                                   // min amplitude of swing
+                -1                                                                    // swing width
             );
             lastVinePosX += float((float)INTERNAL_RES_X / (float)MAX_VINES);
         }
@@ -2703,17 +2720,18 @@ BOOL GS_Demo::PlayGame()
         m_heroSwingCount = 0;
 
         // Update hero state and position
-        m_hero.SetPosition
-        (
-            m_vines[m_vineIndex].GetElementDestX( m_vineElementIndex ) + 5,
-            m_vines[m_vineIndex].GetElementDestY( m_vineElementIndex ) - 50
-        );
+        m_hero.SetPosition(
+            m_vines[m_vineIndex].GetElementDestX(m_vineElementIndex) + 5,
+            m_vines[m_vineIndex].GetElementDestY(m_vineElementIndex) - 50);
         m_hero.SetState(HERO_STATE_SWINGING);
 
         m_fInterval = 0.0f;
 
         // Clear the keyboard buffer.
         m_gsKeyboard.ClearBuffer();
+
+        // Clear controller buffer.
+        m_gsController.ClearBuffer();
     }
     // Are we returning to the same game?
     else if (m_nPrevProgress != PLAY_GAME)
@@ -2722,6 +2740,8 @@ BOOL GS_Demo::PlayGame()
         m_nPrevProgress = PLAY_GAME;
         // Clear the keyboard buffer.
         m_gsKeyboard.ClearBuffer();
+        // Clear controller buffer.
+        m_gsController.ClearBuffer();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////
@@ -2738,7 +2758,7 @@ BOOL GS_Demo::PlayGame()
     if ((m_gsMouse.IsLeftPressed()) && (m_bWasMouseReleased))
     {
         // Hero jumps when left mouse button is pressed
-        if( m_hero.GetState() == HERO_STATE_SWINGING )
+        if (m_hero.GetState() == HERO_STATE_SWINGING)
         {
             m_hero.SetState(HERO_STATE_JUMPING);
             m_gsSound.PlaySample(SAMPLE_HERO_JUMP + m_heroSampleIndex);
@@ -2763,31 +2783,40 @@ BOOL GS_Demo::PlayGame()
     // Clear the keyboard buffer.
     m_gsKeyboard.ClearBuffer();
 
+    // Clear controller buffer.
+    m_gsController.ClearBuffer();
+
     // Act depending on which key was pressed.
     switch (nKey)
     {
     // Was left arrow key pressed?
     case GSK_LEFT:
+    case GSC_BUTTON_DPAD_LEFT:
         // Make the vine swing slower
-        m_vines[m_vineIndex].SetSwingSpeed( m_vines[m_vineIndex].GetSwingSpeed() - 1 );
+        m_vines[m_vineIndex].SetSwingSpeed(m_vines[m_vineIndex].GetSwingSpeed() - 1);
         m_lScore = 0;
         break;
     // Was right arrow key pressed?
     case GSK_RIGHT:
+    case GSC_BUTTON_DPAD_RIGHT:
         // Make the vine swing faster
-        m_vines[m_vineIndex].SetSwingSpeed( m_vines[m_vineIndex].GetSwingSpeed() + 1 );
+        m_vines[m_vineIndex].SetSwingSpeed(m_vines[m_vineIndex].GetSwingSpeed() + 1);
         m_lScore = 0;
         break;
     // Was down arrow key pressed?
     case GSK_DOWN:
+    case GSC_BUTTON_DPAD_DOWN:
         // Move the hero down on the vine, if possible
-        if( m_vineElementIndex < m_vines[m_vineIndex].GetNumElements() - 1 ) m_vineElementIndex++;
+        if (m_vineElementIndex < m_vines[m_vineIndex].GetNumElements() - 1)
+            m_vineElementIndex++;
         m_lScore = 0;
         break;
     // Was up arrow key pressed?
     case GSK_UP:
+    case GSC_BUTTON_DPAD_UP:
         // Move the hero up on the vine, if possible
-        if( m_vineElementIndex > 0 ) m_vineElementIndex--;
+        if (m_vineElementIndex > 0)
+            m_vineElementIndex--;
         m_lScore = 0;
         break;
     // Was the 'M' key pressed?
@@ -2820,11 +2849,12 @@ BOOL GS_Demo::PlayGame()
         break;
     // Was the spacebar key pressed?
     case GSK_SPACE:
+    case GSC_BUTTON_A:
         // Was this key released?
         if (m_bWasKeyReleased)
         {
             // Hero jumps when space bar is pressed
-            if( m_hero.GetState() == HERO_STATE_SWINGING )
+            if (m_hero.GetState() == HERO_STATE_SWINGING)
             {
                 m_hero.SetState(HERO_STATE_JUMPING);
                 m_gsSound.PlaySample(SAMPLE_HERO_JUMP + m_heroSampleIndex);
@@ -2834,6 +2864,7 @@ BOOL GS_Demo::PlayGame()
         break;
     // Was the escape key pressed?
     case GSK_ESCAPE:
+    case GSC_BUTTON_B:
         // Go to the play exit method.
         m_nGameProgress = PLAY_EXIT;
         break;
@@ -2867,7 +2898,7 @@ BOOL GS_Demo::PlayGame()
             m_vines[nLoop].UpdateSwing();
 
             // Is the hero swinging on this vine?
-            if((m_vineIndex == nLoop) && (m_hero.GetState() == HERO_STATE_SWINGING))
+            if ((m_vineIndex == nLoop) && (m_hero.GetState() == HERO_STATE_SWINGING))
             {
                 RECT vineStartElementRect;
                 RECT vineLastElementRect;
@@ -2881,10 +2912,10 @@ BOOL GS_Demo::PlayGame()
                 vineStartElementRect.bottom = vineLastElementRect.bottom;
 
                 // Is there a collision between the adjusted rectangle and the last element?
-                if( m_gsCollide.IsRectOnRect(vineStartElementRect, vineLastElementRect, 100) )
+                if (m_gsCollide.IsRectOnRect(vineStartElementRect, vineLastElementRect, 100))
                 {
                     // Has the vine swing sample not been played?
-                    if( !m_vineSwingSamplePlayed )
+                    if (!m_vineSwingSamplePlayed)
                     {
                         // Play the vine swing sample and remember that it's been played
                         m_gsSound.PlaySample(SAMPLE_VINE_SWOOSH);
@@ -2894,22 +2925,21 @@ BOOL GS_Demo::PlayGame()
                         m_heroSwingCount++;
 
                         // Has the hero swinged more than the allowed times?
-                        if( m_heroSwingCount > m_nMaxHeroSwings )
+                        if (m_heroSwingCount > m_nMaxHeroSwings)
                         {
                             // Is the hero not at the bottom of the vine?
                             // if( m_vineElementIndex < m_vines[m_vineIndex].GetNumElements() - 1 )
                             // {
-                                // Slip one vine element down
-                                // m_vineElementIndex++;
+                            // Slip one vine element down
+                            // m_vineElementIndex++;
                             // }
                             // else
                             // {
-                                // Fall of the vine
-                                m_hero.SetState(HERO_STATE_FALLING);
+                            // Fall of the vine
+                            m_hero.SetState(HERO_STATE_FALLING);
                             // }
                         }
                     }
-
                 }
                 else
                 {
@@ -2919,13 +2949,13 @@ BOOL GS_Demo::PlayGame()
             }
 
             // Is it NOT the vine the hero is currently swinging on and is the hero jumping?
-            if( (m_vineIndex != nLoop) && (m_hero.GetState() == HERO_STATE_JUMPING) )
+            if ((m_vineIndex != nLoop) && (m_hero.GetState() == HERO_STATE_JUMPING))
             {
                 // Check for collision between the hero and any of the elements in the new vine
                 vineElement = m_vines[nLoop].GetCollideElement(heroRect);
 
                 // Was there a collision?
-                if( vineElement != -1)
+                if (vineElement != -1)
                 {
                     // Remember the vine and element the hero is swinging on
                     m_vineElementIndex = vineElement;
@@ -2936,15 +2966,15 @@ BOOL GS_Demo::PlayGame()
                     m_heroSwingCount = 0;
 
                     // Add to the player's score
-                    if( m_nGameMode == GAME_MODE_EASY)
+                    if (m_nGameMode == GAME_MODE_EASY)
                     {
                         m_lScore += 50;
                     }
-                    else if( m_nGameMode == GAME_MODE_NORMAL)
+                    else if (m_nGameMode == GAME_MODE_NORMAL)
                     {
                         m_lScore += 100;
                     }
-                    else if( m_nGameMode == GAME_MODE_HARD)
+                    else if (m_nGameMode == GAME_MODE_HARD)
                     {
                         m_lScore += 150;
                     }
@@ -2953,41 +2983,41 @@ BOOL GS_Demo::PlayGame()
         }
 
         // Is the hero swinging?
-        if( HERO_STATE_SWINGING == m_hero.GetState() )
+        if (HERO_STATE_SWINGING == m_hero.GetState())
         {
             // Update the hero coordinates according the the element of the vine he is swinging on
-            x = m_vines[m_vineIndex].GetElementDestX( m_vineElementIndex );
-            y = m_vines[m_vineIndex].GetElementDestY( m_vineElementIndex );
+            x = m_vines[m_vineIndex].GetElementDestX(m_vineElementIndex);
+            y = m_vines[m_vineIndex].GetElementDestY(m_vineElementIndex);
             m_hero.SetPosition(x, y - 100);
 
             // Update the hero swing movement setting the rotation based on the angle between
             // the first element of the vine and the element the hero is swining on
-            float rotateZ = atan2
-                (
-                    m_vines[m_vineIndex].GetElementDestY(0) - y,
-                    m_vines[m_vineIndex].GetElementDestX(0) - x
-                ) * 100.0f - 180.0f;
+            float rotateZ = atan2(
+                                m_vines[m_vineIndex].GetElementDestY(0) - y,
+                                m_vines[m_vineIndex].GetElementDestX(0) - x) *
+                                100.0f -
+                            180.0f;
 
             m_hero.UpdateMovement((m_vineElementIndex < 3) ? 0.0f : rotateZ / 2.0f);
         }
         // Is the hero jumping or falling?
-        else if( (HERO_STATE_JUMPING == m_hero.GetState()) ||
-                 (HERO_STATE_FALLING == m_hero.GetState()) )
+        else if ((HERO_STATE_JUMPING == m_hero.GetState()) ||
+                 (HERO_STATE_FALLING == m_hero.GetState()))
         {
             // Update the hero jump or fall movement
             m_hero.UpdateMovement();
         }
 
         // Has the hero died?
-        if( m_hero.GetDestY() < 0 - m_hero.GetHeight() )
+        if (m_hero.GetDestY() < 0 - m_hero.GetHeight())
         {
             m_gsSound.PlaySample(SAMPLE_HERO_DEATH + m_heroSampleIndex);
             m_nGameProgress = PLAY_OUTRO;
         }
 
         // Has the hero moved past the scrolling point and is the hero swinging?
-        if( (m_hero.GetDestX() < scrollPoint) && (m_hero.GetDestY() > 0) &&
-            (m_hero.GetState() == HERO_STATE_SWINGING) )
+        if ((m_hero.GetDestX() < scrollPoint) && (m_hero.GetDestY() > 0) &&
+            (m_hero.GetState() == HERO_STATE_SWINGING))
         {
             // Adjust the scrolling of the background image
             scrollX = ((scrollPoint - m_hero.GetDestX()) / 10.f);
@@ -3000,26 +3030,25 @@ BOOL GS_Demo::PlayGame()
                 m_vines[nLoop].AddDestX(scrollX);
 
                 // Has the vine left the screen?
-                if( m_vines[nLoop].GetDestX() > INTERNAL_RES_X )
+                if (m_vines[nLoop].GetDestX() > INTERNAL_RES_X)
                 {
                     // Make certain the swing speed for the next vine is different
-                    int newSwingSpeed = rand()%(m_nMaxVineSpeed-m_nMinVineSpeed) + m_nMinVineSpeed;
-                    while( (newSwingSpeed > m_vineLastSwingSpeed - 5) && (newSwingSpeed < m_vineLastSwingSpeed + 5) )
+                    int newSwingSpeed = rand() % (m_nMaxVineSpeed - m_nMinVineSpeed) + m_nMinVineSpeed;
+                    while ((newSwingSpeed > m_vineLastSwingSpeed - 5) && (newSwingSpeed < m_vineLastSwingSpeed + 5))
                     {
-                        newSwingSpeed = rand()%(m_nMaxVineSpeed-m_nMinVineSpeed) + m_nMinVineSpeed;
+                        newSwingSpeed = rand() % (m_nMaxVineSpeed - m_nMinVineSpeed) + m_nMinVineSpeed;
                     }
                     m_vineLastSwingSpeed = newSwingSpeed;
 
                     // Create a new vine to swing to
-                    m_vines[nLoop].Create
-                    (
-                        rand()%(m_nMaxVineElements-m_nMinVineElements) + m_nMinVineElements, // number of elements
-                        m_vines[nLoop].GetDestX() - INTERNAL_RES_X, // start x
-                        INTERNAL_RES_Y - 10,  // start y
-                        m_vineLastSwingSpeed, // swing speed
-                        -1, // max amplitude of swing
-                        -1, // min amplitude of swing
-                        -1  // swing width
+                    m_vines[nLoop].Create(
+                        rand() % (m_nMaxVineElements - m_nMinVineElements) + m_nMinVineElements, // number of elements
+                        m_vines[nLoop].GetDestX() - INTERNAL_RES_X,                              // start x
+                        INTERNAL_RES_Y - 10,                                                     // start y
+                        m_vineLastSwingSpeed,                                                    // swing speed
+                        -1,                                                                      // max amplitude of swing
+                        -1,                                                                      // min amplitude of swing
+                        -1                                                                       // swing width
                     );
                 }
             }
@@ -3050,18 +3079,18 @@ BOOL GS_Demo::PlayGame()
     m_gsFont.SetText("%ld", m_lScore);
     m_gsFont.SetModulateColor(0.5f, 1.0f, 0.8f, 1.0f);
     m_gsFont.SetScaleXY(2.0f, 2.0f);
-    m_gsFont.SetDestX((INTERNAL_RES_X / 2)  - (m_gsFont.GetTextWidth() / 2));
+    m_gsFont.SetDestX((INTERNAL_RES_X / 2) - (m_gsFont.GetTextWidth() / 2));
     m_gsFont.SetDestY(m_gsFont.GetLetterHeight() / 2);
     m_gsFont.Render();
 
     // Is the hero within three swings of slipping or falling?
-    if( m_heroSwingCount >=  m_nMaxHeroSwings - 3 )
+    if (m_heroSwingCount >= m_nMaxHeroSwings - 3)
     {
         // Has the hero not yet reached the maximum allowed swings?
-        if( m_heroSwingCount < m_nMaxHeroSwings )
+        if (m_heroSwingCount < m_nMaxHeroSwings)
         {
             // Display the number of swings left
-            m_gsFont.SetText("%d", m_nMaxHeroSwings - m_heroSwingCount );
+            m_gsFont.SetText("%d", m_nMaxHeroSwings - m_heroSwingCount);
             m_gsFont.SetScaleXY(3.0f, 3.0f);
         }
         else
@@ -3069,21 +3098,21 @@ BOOL GS_Demo::PlayGame()
             // Has the hero not reached the bottom of the vine?
             // if( m_vineElementIndex < m_vines[m_vineIndex].GetNumElements() - 1 )
             // {
-                // Display a message that the hero is slipping
-                // m_gsFont.SetText("HURRY!");
-                // m_gsFont.SetScaleXY(3.0f, 3.0f);
+            // Display a message that the hero is slipping
+            // m_gsFont.SetText("HURRY!");
+            // m_gsFont.SetScaleXY(3.0f, 3.0f);
 
             // }
             // else
             // {
-                // Display a message to jump
-                m_gsFont.SetText("JUMP!");
-                m_gsFont.SetScaleXY(4.0f, 4.0f);
+            // Display a message to jump
+            m_gsFont.SetText("JUMP!");
+            m_gsFont.SetScaleXY(4.0f, 4.0f);
             // }
         }
         // Display a large red message centered in the screen in red
         m_gsFont.SetModulateColor(1.0f, 0.5f, 0.5f, 0.5f);
-        m_gsFont.SetDestX((INTERNAL_RES_X -  m_gsFont.GetTextWidth()) / 2);
+        m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth()) / 2);
         m_gsFont.SetDestY((INTERNAL_RES_Y - m_gsFont.GetTextHeight()) / 2);
         m_gsFont.Render();
     }
@@ -3286,13 +3315,13 @@ BOOL GS_Demo::PlayPause()
 
     // Display a message centered in the screen.
     m_gsFont.SetText("GAME PAUSED");
-    m_gsFont.SetDestX((INTERNAL_RES_X -  m_gsFont.GetTextWidth()) / 2);
+    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth()) / 2);
     m_gsFont.SetDestY(((INTERNAL_RES_Y - m_gsFont.GetTextHeight()) / 2) +
                       m_gsFont.GetTextHeight());
     m_gsFont.Render();
 
     m_gsFont.SetText("(PRESS P)");
-    m_gsFont.SetDestX((INTERNAL_RES_X -  m_gsFont.GetTextWidth()) / 2);
+    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth()) / 2);
     m_gsFont.SetDestY(((INTERNAL_RES_Y - m_gsFont.GetTextHeight()) / 2) -
                       m_gsFont.GetTextHeight());
     m_gsFont.Render();
@@ -3316,7 +3345,8 @@ BOOL GS_Demo::PlayPause()
 
 BOOL GS_Demo::PlayExit()
 {
-    int keyList[6] = { GSK_ENTER, GSK_UP, GSK_DOWN, GSK_Y, GSK_N, GSK_ESCAPE };
+    int keyList[6] = {GSK_ENTER, GSK_UP, GSK_DOWN, GSK_Y, GSK_N, GSK_ESCAPE};
+    int ButtonList[4] = {GSC_BUTTON_A, GSC_BUTTON_DPAD_UP, GSC_BUTTON_DPAD_DOWN, GSC_BUTTON_B};
 
     // Has the display not been initialized?
     if (!this->m_gsDisplay.IsReady())
@@ -3342,6 +3372,8 @@ BOOL GS_Demo::PlayExit()
         m_bWasKeyReleased = FALSE;
         // Clear keyboard buffer.
         m_gsKeyboard.ClearBuffer();
+        // Clear controller buffer.
+        m_gsController.ClearBuffer();
         // Setup variables for mouse input.
         m_nOldMouseX = m_gsMouse.GetX();
         m_nOldMouseY = m_gsMouse.GetY();
@@ -3377,19 +3409,27 @@ BOOL GS_Demo::PlayExit()
     m_nOptionSelected = -1;
 
     // Were all the keys in the key list released?
-    if (TRUE == m_gsKeyboard.AreKeysUp(6, keyList))
+    if (TRUE == m_gsKeyboard.AreKeysUp(6, keyList) && TRUE == m_gsController.AreButtonsUp(4, ButtonList))
     {
+        // Set flag to indicate that all the keys were released.
         m_bWasKeyReleased = TRUE;
     }
 
-    // Check to see wether a key was pressed.
+    // Check to see wether a key or button was pressed.
     int nKey = m_gsKeyboard.GetKeyPressed();
+    int nButton = m_gsController.GetButtonPressed();
+
+    if (nButton != -1)
+    {
+        nKey = nButton;
+    }
 
     // Act depending on key pressed.
     switch (nKey)
     {
     // Was the up key pressed?
     case GSK_UP:
+    case GSC_BUTTON_DPAD_UP:
         if (m_bWasKeyReleased)
         {
             // Highlight previous option.
@@ -3400,6 +3440,7 @@ BOOL GS_Demo::PlayExit()
         break;
     // Was the down key pressed?
     case GSK_DOWN:
+    case GSC_BUTTON_DPAD_DOWN:
         if (m_bWasKeyReleased)
         {
             // Highlight next option.
@@ -3430,6 +3471,7 @@ BOOL GS_Demo::PlayExit()
         break;
     // Was the enter key pressed?
     case GSK_ENTER:
+    case GSC_BUTTON_A:
         if (m_bWasKeyReleased)
         {
             // Remeber the option selected.
@@ -3439,6 +3481,7 @@ BOOL GS_Demo::PlayExit()
         break;
     // Was the escape key pressed?
     case GSK_ESCAPE:
+    case GSC_BUTTON_B:
         if (m_bWasKeyReleased)
         {
             // The no option was selected.
@@ -3546,7 +3589,7 @@ BOOL GS_Demo::PlayExit()
     this->RenderFrameRate(0.5f);
 
     // Center the menu horizontally and vertically on the screen.
-    m_gsMenu.SetDestX((INTERNAL_RES_X - m_gsMenu.GetWidth())  / 2);
+    m_gsMenu.SetDestX((INTERNAL_RES_X - m_gsMenu.GetWidth()) / 2);
     m_gsMenu.SetDestY((INTERNAL_RES_Y - m_gsMenu.GetHeight()) / 2);
 
     // Render the menu to the back surface using the specified colors.
@@ -3571,7 +3614,7 @@ BOOL GS_Demo::PlayExit()
         // Remember where we've come from.
         m_nPrevProgress = PLAY_EXIT;
         // Reset method variables.
-        m_bIsInitialized  = FALSE;
+        m_bIsInitialized = FALSE;
     }
 
     return TRUE;
@@ -3588,11 +3631,10 @@ BOOL GS_Demo::PlayExit()
 BOOL GS_Demo::PlayOutro()
 {
     int nHeroDeathQuotes[] =
-    {
-        SAMPLE_HERO_DEATH_QUOTE_1 + m_heroSampleIndex,
-        SAMPLE_HERO_DEATH_QUOTE_2 + m_heroSampleIndex,
-        SAMPLE_HERO_DEATH_QUOTE_3 + m_heroSampleIndex
-    };
+        {
+            SAMPLE_HERO_DEATH_QUOTE_1 + m_heroSampleIndex,
+            SAMPLE_HERO_DEATH_QUOTE_2 + m_heroSampleIndex,
+            SAMPLE_HERO_DEATH_QUOTE_3 + m_heroSampleIndex};
     static int nStartScrollX, nStartScrollY;
 
     // Has the display not been initialized?
@@ -3617,9 +3659,9 @@ BOOL GS_Demo::PlayOutro()
     {
         // Initialize method variables.
         m_fInterval = 0.0f;
-        m_nCounter  = 0;
-        m_fAlpha    = 1.0f;
-        m_fScale    = 0.1f;
+        m_nCounter = 0;
+        m_fAlpha = 1.0f;
+        m_fScale = 0.1f;
 
         // Set starting coordinates for shaking effect
         nStartScrollX = m_gsBackSprite.GetScrollX();
@@ -3644,12 +3686,12 @@ BOOL GS_Demo::PlayOutro()
         m_nCounter++;
 
         // Act depending on how many counts have elapsed.
-        if( (m_nCounter < DEATH_SHAKE_LENGTH) && (m_nPrevProgress != PLAY_EXIT) )
+        if ((m_nCounter < DEATH_SHAKE_LENGTH) && (m_nPrevProgress != PLAY_EXIT))
         {
             // Set the shake amount (modify it to decrease over time)
             float fShakeMod = DEATH_SHAKE_STRENGTH - (DEATH_SHAKE_STRENGTH * (float)m_nCounter / (float)DEATH_SHAKE_LENGTH);
-            float fShakeX = nStartScrollX + rand()%DEATH_SHAKE_STRENGTH - fShakeMod;
-            float fShakeY = nStartScrollY + rand()%DEATH_SHAKE_STRENGTH - fShakeMod;
+            float fShakeX = nStartScrollX + rand() % DEATH_SHAKE_STRENGTH - fShakeMod;
+            float fShakeY = nStartScrollY + rand() % DEATH_SHAKE_STRENGTH - fShakeMod;
 
             // Shake the background to simulate impact
             m_gsBackSprite.SetScrollXY(fShakeX, fShakeY);
@@ -3664,10 +3706,10 @@ BOOL GS_Demo::PlayOutro()
         if (m_nCounter < 125)
         {
             // Delay the hero's death quote a bit
-            if( (m_nCounter == 15) && (m_nPrevProgress != PLAY_EXIT) )
+            if ((m_nCounter == 15) && (m_nPrevProgress != PLAY_EXIT))
             {
                 // Play the hero death quote
-                m_gsSound.PlaySample(nHeroDeathQuotes[rand()%3]);
+                m_gsSound.PlaySample(nHeroDeathQuotes[rand() % 3]);
             }
 
             // Are images not entirely transparent?
@@ -3691,7 +3733,7 @@ BOOL GS_Demo::PlayOutro()
         else
         {
             // Is the score good enough to be a hiscore?
-            if (m_lScore > m_gsHiscores[MAX_SCORES-1].lScore)
+            if (m_lScore > m_gsHiscores[MAX_SCORES - 1].lScore)
             {
                 // Add the score to the hiscore table.
                 m_nNextProgress = SCORES_ADD;
@@ -3706,7 +3748,7 @@ BOOL GS_Demo::PlayOutro()
         }
 
         // Increase game over scale
-        if( m_fScale < 4.0f )
+        if (m_fScale < 4.0f)
         {
             m_fScale += 0.1f;
         }
@@ -3738,7 +3780,7 @@ BOOL GS_Demo::PlayOutro()
     // Display a message centered in the screen.
     m_gsFont.SetText("GAME OVER");
     m_gsFont.SetScaleXY(m_fScale, m_fScale);
-    m_gsFont.SetDestX((INTERNAL_RES_X -  m_gsFont.GetTextWidth()) / 2);
+    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth()) / 2);
     m_gsFont.SetDestY((INTERNAL_RES_Y - m_gsFont.GetTextHeight()) / 2);
     m_gsFont.SetModulateColor(-1.0f, -1.0f, -1.0f, 1.0f - m_fAlpha);
     m_gsFont.Render();
@@ -3774,7 +3816,7 @@ BOOL GS_Demo::PlayOutro()
         if (m_gsSound.IsStreamPlaying())
         {
             // Restore the game music volume.
-            m_gsSound.SetStreamVolume( m_gsSettings.nMusicVolume);
+            m_gsSound.SetStreamVolume(m_gsSettings.nMusicVolume);
             // Stop game music from playing.
             m_gsSound.StopStream();
         }
@@ -3785,11 +3827,9 @@ BOOL GS_Demo::PlayOutro()
     return TRUE;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // HI-SCORE METHODS ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 //==============================================================================================
 // GS_Demo::ScoresIntro():
@@ -3918,7 +3958,7 @@ BOOL GS_Demo::ScoresView()
     // Do Method Initialization /////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////
 
-    char szTempString[128] = { 0 };
+    char szTempString[128] = {0};
 
     // Has the method not been initialized?
     if (m_bIsInitialized == FALSE)
@@ -3927,6 +3967,8 @@ BOOL GS_Demo::ScoresView()
         m_fInterval = 0.0f;
         // Clear the keyboard buffer.
         m_gsKeyboard.ClearBuffer();
+        // Clear controller buffer.
+        m_gsController.ClearBuffer();
         // Where we want to go to next.
         m_nNextProgress = SCORES_OUTRO;
         // Initialization completed.
@@ -3997,7 +4039,7 @@ BOOL GS_Demo::ScoresView()
     m_gsFont.SetText(szTempString);
     m_gsFont.SetModulateColor(0.5f, 0.9f, 0.8f, 1.0f);
     m_gsFont.SetScaleXY(2.0f, 2.0f);
-    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth())  / 2);
+    m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth()) / 2);
     m_gsFont.SetDestY(INTERNAL_RES_Y - ((INTERNAL_RES_Y - scoreStartY) / 2) - (m_gsFont.GetTextHeight() / 2));
     m_gsFont.Render();
 
@@ -4019,11 +4061,11 @@ BOOL GS_Demo::ScoresView()
             m_gsFont.SetModulateColor(1.0f, 1.0f, 1.0f, 1.0f);
         }
         // Setup a temporary string with all the relevant hiscore data and assign it.
-        sprintf(szTempString, " %02d %s %06ld ",nLoop+1, m_gsHiscores[nLoop].szName,
+        sprintf(szTempString, " %02d %s %06ld ", nLoop + 1, m_gsHiscores[nLoop].szName,
                 m_gsHiscores[nLoop].lScore);
         m_gsFont.SetText(szTempString);
         // Set the position of the next hiscore.
-        m_gsFont.SetDestX((INTERNAL_RES_X -  m_gsFont.GetTextWidth())  / 2);
+        m_gsFont.SetDestX((INTERNAL_RES_X - m_gsFont.GetTextWidth()) / 2);
         m_gsFont.SetDestY(scoreStartY);
         // Draw the next score one line down
         scoreStartY -= m_gsFont.GetTextHeight();
@@ -4053,7 +4095,7 @@ BOOL GS_Demo::ScoresView()
         // Remember where we've come from.
         m_nPrevProgress = SCORES_VIEW;
         // Reset method variables.
-        m_nScoreIndex    = 0;
+        m_nScoreIndex = 0;
         m_bIsInitialized = FALSE;
     }
 
@@ -4088,18 +4130,21 @@ BOOL GS_Demo::ScoresAdd()
     // Do Method Initialization /////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////
 
-    static int nCharCount  = 0;
+    static int nCharCount = 0;
 
-    static char szTempString[11] = { 0 };
+    static float fInputRepeatFraction = 0.0f;
+
+    static char szTempString[11] = {0};
 
     // Has the method not been initialized?
     if (m_bIsInitialized == FALSE)
     {
         // Initialize variables.
         m_nScoreIndex = 0;
-        nCharCount    = 0;
+        nCharCount = 0;
+        fInputRepeatFraction = 0.0f;
         // Loop through all the hiscores starting from the lowest.
-        for (int nLoop = MAX_SCORES-1; nLoop >= 0; nLoop--)
+        for (int nLoop = MAX_SCORES - 1; nLoop >= 0; nLoop--)
         {
             // Is the current score is greater than the hiscore?
             if (m_lScore > m_gsHiscores[nLoop].lScore)
@@ -4112,6 +4157,8 @@ BOOL GS_Demo::ScoresAdd()
         lstrcpy(szTempString, "..........");
         // Clear the keyboard buffer.
         m_gsKeyboard.ClearBuffer();
+        // Clear controller buffer.
+        m_gsController.ClearBuffer();
         // Play the hero hiscore quote
         m_gsSound.PlaySample(SAMPLE_HERO_HISCORE_QUOTE + m_heroSampleIndex);
         // Where we want to go to next.
@@ -4127,51 +4174,88 @@ BOOL GS_Demo::ScoresAdd()
     // Check to see wether a key was pressed.
     int nKey = m_gsKeyboard.GetBufferedKey();
 
+    // Implement input delay to allow for repeated inputs.
+    fInputRepeatFraction += this->GetActionInterval(60);
+
+    // Has enough time passed to allow for repeated input?
+    if (fInputRepeatFraction >= 5.0f && nKey <= 0)
+    {
+        // Check if keys are held down.
+        int nKeyPressed = m_gsKeyboard.GetKeyPressed();
+
+        // Was the up or down key held down?
+        if (nKeyPressed == GSK_UP ||
+            nKeyPressed == GSK_DOWN)
+        {
+            nKey = nKeyPressed;
+        }
+
+        // Check if buttons are held down.
+        int nPressedButton = m_gsController.GetButtonPressed();
+
+        // Was a D-Pad button held down?
+        if (nPressedButton == GSC_BUTTON_DPAD_UP ||
+            nPressedButton == GSC_BUTTON_DPAD_DOWN)
+        {
+            nKey = nPressedButton;
+        }
+
+        // Reset input delay fraction.
+        fInputRepeatFraction = 0.0f;
+    }
+
     // Act depending on key pressed.
     switch (nKey)
     {
     // Was the up key pressed?
     case GSK_UP:
+    case GSC_BUTTON_DPAD_UP:
         // Go to the next character.
         szTempString[nCharCount]++;
         // Allow only certain characters.
-        if (szTempString[nCharCount] == GSK_DELETE+1)
+        if (szTempString[nCharCount] == GSK_DELETE + 1)
         {
             szTempString[nCharCount] = GSK_0;
         }
-        else if (szTempString[nCharCount] == GSK_9+1)
+        else if (szTempString[nCharCount] == GSK_9 + 1)
         {
             szTempString[nCharCount] = GSK_A;
         }
-        else if (szTempString[nCharCount] == GSK_Z+1)
+        else if (szTempString[nCharCount] == GSK_Z + 1)
         {
             szTempString[nCharCount] = GSK_DELETE;
         }
         // Play the appropriate sound effect.
         m_gsSound.PlaySample(SAMPLE_OPTION);
+        // Reset input delay fraction.
+        fInputRepeatFraction = 0.0f;
         break;
     // Was the up key pressed?
     case GSK_DOWN:
+    case GSC_BUTTON_DPAD_DOWN:
         // Go to the previous character.
         szTempString[nCharCount]--;
         // Allow only certain characters.
-        if (szTempString[nCharCount] == GSK_DELETE-1)
+        if (szTempString[nCharCount] == GSK_DELETE - 1)
         {
             szTempString[nCharCount] = GSK_Z;
         }
-        else if (szTempString[nCharCount] == GSK_A-1)
+        else if (szTempString[nCharCount] == GSK_A - 1)
         {
             szTempString[nCharCount] = GSK_9;
         }
-        else if (szTempString[nCharCount] == GSK_0-1)
+        else if (szTempString[nCharCount] == GSK_0 - 1)
         {
             szTempString[nCharCount] = GSK_DELETE;
         }
         // Play the appropriate sound effect.
         m_gsSound.PlaySample(SAMPLE_OPTION);
+        // Reset input delay fraction.
+        fInputRepeatFraction = 0.0f;
         break;
     // Was the left key pressed?
     case GSK_LEFT:
+    case GSC_BUTTON_DPAD_LEFT:
         // Move one character left.
         nCharCount--;
         // Wrap around edges.
@@ -4184,6 +4268,7 @@ BOOL GS_Demo::ScoresAdd()
         break;
     // Was the right key pressed?
     case GSK_RIGHT:
+    case GSC_BUTTON_DPAD_RIGHT:
         // Move one character right.
         nCharCount++;
         // Wrap around edges.
@@ -4200,9 +4285,9 @@ BOOL GS_Demo::ScoresAdd()
         if (nCharCount > 0)
         {
             // Shift all letters one back starting at active letter.
-            for (int nLoop = nCharCount-1; nLoop < 9; nLoop++)
+            for (int nLoop = nCharCount - 1; nLoop < 9; nLoop++)
             {
-                szTempString[nLoop] = szTempString[nLoop+1];
+                szTempString[nLoop] = szTempString[nLoop + 1];
             }
             // Delete the last letter.
             szTempString[9] = GSK_DELETE;
@@ -4217,7 +4302,7 @@ BOOL GS_Demo::ScoresAdd()
         // Shift all letters one back starting at active letter.
         for (int nLoop = nCharCount; nLoop < 9; nLoop++)
         {
-            szTempString[nLoop] = szTempString[nLoop+1];
+            szTempString[nLoop] = szTempString[nLoop + 1];
         }
         // Delete the last letter.
         szTempString[9] = GSK_DELETE;
@@ -4226,16 +4311,17 @@ BOOL GS_Demo::ScoresAdd()
         break;
     // Was the enter key pressed?
     case GSK_ENTER:
+    case GSC_BUTTON_A:
         // Loop through all the scores lower than the current score.
-        for (int nLoop = MAX_SCORES-1; nLoop > m_nScoreIndex; nLoop--)
+        for (int nLoop = MAX_SCORES - 1; nLoop > m_nScoreIndex; nLoop--)
         {
             // Shift scores to make place for the new score.
-            m_gsHiscores[nLoop] = m_gsHiscores[nLoop-1];
+            m_gsHiscores[nLoop] = m_gsHiscores[nLoop - 1];
         }
         // Save the player name and statistics.
-        if( strcmp(szTempString, "..........") == 0 )
+        if (strcmp(szTempString, "..........") == 0)
         {
-            if( m_hero.GetSelectedHero() == SELECT_HERO_COURAGE)
+            if (m_hero.GetSelectedHero() == SELECT_HERO_COURAGE)
             {
                 lstrcpy(szTempString, "COURAGE...");
             }
@@ -4245,7 +4331,7 @@ BOOL GS_Demo::ScoresAdd()
             }
         }
         lstrcpy(m_gsHiscores[m_nScoreIndex].szName, szTempString);
-        m_gsHiscores[m_nScoreIndex].lScore  = m_lScore;
+        m_gsHiscores[m_nScoreIndex].lScore = m_lScore;
         // Play the appropriate sound effect.
         m_gsSound.PlaySample(SAMPLE_SELECT);
         // Progress to the next section.
@@ -4253,6 +4339,7 @@ BOOL GS_Demo::ScoresAdd()
         break;
     // Was the escape key pressed?
     case GSK_ESCAPE:
+    case GSC_BUTTON_B:
         // Play the appropriate sound effect.
         m_gsSound.PlaySample(SAMPLE_SELECT);
         // Progress to the next section.
@@ -4285,7 +4372,6 @@ BOOL GS_Demo::ScoresAdd()
         }
         break;
     }
-
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     // Do Method Logic //////////////////////////////////////////////////////////////////////////
@@ -4456,11 +4542,9 @@ BOOL GS_Demo::ScoresOutro()
     return TRUE;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // LOAD / SAVE METHODS /////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 //==============================================================================================
 // GS_Demo::LoadSettings():
@@ -4473,7 +4557,7 @@ BOOL GS_Demo::ScoresOutro()
 BOOL GS_Demo::LoadSettings()
 {
 
-    char szTempString[_MAX_PATH] = { 0 };
+    char szTempString[_MAX_PATH] = {0};
     GS_IniFile gsIniFile;
 
     // Determine the full pathname of the INI file.
@@ -4489,11 +4573,11 @@ BOOL GS_Demo::LoadSettings()
     }
 
     // Read all the display settings.
-    m_gsSettings.nDisplayWidth   = gsIniFile.ReadInt("Display", "DisplayWidth",   -1);
-    m_gsSettings.nDisplayHeight  = gsIniFile.ReadInt("Display", "DisplayHeight",  -1);
-    m_gsSettings.nColorDepth     = gsIniFile.ReadInt("Display", "ColorDepth",     -1);
-    m_gsSettings.bWindowedMode   = gsIniFile.ReadInt("Display", "WindowMode",     -1);
-    m_gsSettings.bEnableVSync    = gsIniFile.ReadInt("Display", "EnableVSync",    -1);
+    m_gsSettings.nDisplayWidth = gsIniFile.ReadInt("Display", "DisplayWidth", -1);
+    m_gsSettings.nDisplayHeight = gsIniFile.ReadInt("Display", "DisplayHeight", -1);
+    m_gsSettings.nColorDepth = gsIniFile.ReadInt("Display", "ColorDepth", -1);
+    m_gsSettings.bWindowedMode = gsIniFile.ReadInt("Display", "WindowMode", -1);
+    m_gsSettings.bEnableVSync = gsIniFile.ReadInt("Display", "EnableVSync", -1);
     m_gsSettings.bEnableAliasing = gsIniFile.ReadInt("Display", "EnableAliasing", -1);
 
     // Did reading display settings fail?
@@ -4523,7 +4607,7 @@ BOOL GS_Demo::LoadSettings()
     }
 
     // Read all the sound settings.
-    m_gsSettings.nMusicVolume   = gsIniFile.ReadInt("Sound", "MusicVolume",   -1);
+    m_gsSettings.nMusicVolume = gsIniFile.ReadInt("Sound", "MusicVolume", -1);
     m_gsSettings.nEffectsVolume = gsIniFile.ReadInt("Sound", "EffectsVolume", -1);
 
     // Did reading sound settings fail?
@@ -4553,7 +4637,7 @@ BOOL GS_Demo::LoadSettings()
 BOOL GS_Demo::SaveSettings()
 {
 
-    char szTempString[_MAX_PATH] = { 0 };
+    char szTempString[_MAX_PATH] = {0};
     GS_IniFile gsIniFile;
 
     // Determine the full pathname of the INI file.
@@ -4569,15 +4653,15 @@ BOOL GS_Demo::SaveSettings()
     }
 
     // Write display settings.
-    gsIniFile.WriteInt("Display", "DisplayWidth",   m_gsSettings.nDisplayWidth);
-    gsIniFile.WriteInt("Display", "DisplayHeight",  m_gsSettings.nDisplayHeight);
-    gsIniFile.WriteInt("Display", "ColorDepth",     m_gsSettings.nColorDepth);
-    gsIniFile.WriteInt("Display", "WindowMode",     m_gsSettings.bWindowedMode);
-    gsIniFile.WriteInt("Display", "EnableVSync",    m_gsSettings.bEnableVSync);
+    gsIniFile.WriteInt("Display", "DisplayWidth", m_gsSettings.nDisplayWidth);
+    gsIniFile.WriteInt("Display", "DisplayHeight", m_gsSettings.nDisplayHeight);
+    gsIniFile.WriteInt("Display", "ColorDepth", m_gsSettings.nColorDepth);
+    gsIniFile.WriteInt("Display", "WindowMode", m_gsSettings.bWindowedMode);
+    gsIniFile.WriteInt("Display", "EnableVSync", m_gsSettings.bEnableVSync);
     gsIniFile.WriteInt("Display", "EnableAliasing", m_gsSettings.bEnableAliasing);
 
     // Write sound settings.
-    gsIniFile.WriteInt("Sound", "MusicVolume",   m_gsSettings.nMusicVolume);
+    gsIniFile.WriteInt("Sound", "MusicVolume", m_gsSettings.nMusicVolume);
     gsIniFile.WriteInt("Sound", "EffectsVolume", m_gsSettings.nEffectsVolume);
 
     // Close the INI file.
@@ -4597,7 +4681,7 @@ BOOL GS_Demo::SaveSettings()
 BOOL GS_Demo::LoadHiscores()
 {
 
-    char szTempString[_MAX_PATH] = { 0 };
+    char szTempString[_MAX_PATH] = {0};
     GS_IniFile gsIniFile;
 
     // Determine the full pathname of the INI file.
@@ -4621,7 +4705,7 @@ BOOL GS_Demo::LoadHiscores()
         lstrcpy(m_gsHiscores[nLoop].szName,
                 gsIniFile.ReadString(szTempString, "Name", ".........."));
         // Load the player score from the hiscores file.
-        m_gsHiscores[nLoop].lScore = (long) gsIniFile.ReadFloat(szTempString, "Score", 0);
+        m_gsHiscores[nLoop].lScore = (long)gsIniFile.ReadFloat(szTempString, "Score", 0);
     }
 
     // Close the INI file.
@@ -4641,7 +4725,7 @@ BOOL GS_Demo::LoadHiscores()
 BOOL GS_Demo::SaveHiscores()
 {
 
-    char szTempString[_MAX_PATH] = { 0 };
+    char szTempString[_MAX_PATH] = {0};
     GS_IniFile gsIniFile;
 
     // Determine the full pathname of the INI file.
@@ -4662,9 +4746,9 @@ BOOL GS_Demo::SaveHiscores()
         // Save the score heading.
         sprintf(szTempString, "Score%d", nLoop);
         // Save the player name and score to the hiscores file.
-        if( strlen(m_gsHiscores[nLoop].szName) > 0 )
-            gsIniFile.WriteString(szTempString,"Name", m_gsHiscores[nLoop].szName);
-        gsIniFile.WriteFloat(szTempString, "Score", (float) m_gsHiscores[nLoop].lScore);
+        if (strlen(m_gsHiscores[nLoop].szName) > 0)
+            gsIniFile.WriteString(szTempString, "Name", m_gsHiscores[nLoop].szName);
+        gsIniFile.WriteFloat(szTempString, "Score", (float)m_gsHiscores[nLoop].lScore);
     }
 
     // Close the INI file.
@@ -4673,11 +4757,9 @@ BOOL GS_Demo::SaveHiscores()
     return TRUE;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //  Helper Methods  ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 //==============================================================================================
 // GS_Demo::RenderBackground():
@@ -4694,7 +4776,7 @@ void GS_Demo::RenderBackground(float fAlpha)
     m_gsBackSprite.SetModulateColor(-1.0f, -1.0f, -1.0f, fAlpha);
 
     // Postion the background centered in the screen.
-    m_gsBackSprite.SetDestXY((INTERNAL_RES_X - m_gsBackSprite.GetScaledWidth())  / 2,
+    m_gsBackSprite.SetDestXY((INTERNAL_RES_X - m_gsBackSprite.GetScaledWidth()) / 2,
                              (INTERNAL_RES_Y - m_gsBackSprite.GetScaledHeight()) / 2);
 
     // Display the background image.
@@ -4780,7 +4862,7 @@ void GS_Demo::RenderFrameRate(float fAlpha)
 void GS_Demo::SetRenderScaling(int nWidth, int nHeight, bool bKeepAspect)
 {
     // Is no scaling required?
-    if( (nWidth == INTERNAL_RES_X) && (nHeight == INTERNAL_RES_Y) )
+    if ((nWidth == INTERNAL_RES_X) && (nHeight == INTERNAL_RES_Y))
     {
         // Reset the default scaling values
         GS_OGLDisplay::SetScaleFactorX(1.0f);
@@ -4796,29 +4878,29 @@ void GS_Demo::SetRenderScaling(int nWidth, int nHeight, bool bKeepAspect)
     float aspect = (float)INTERNAL_RES_X / (float)INTERNAL_RES_Y;
 
     // Set up default values for upscaling or downscaling
-    float fAspectWidth  = (float)nWidth;
+    float fAspectWidth = (float)nWidth;
     float fAspectHeight = (float)nHeight;
     float fRenderModX = 0;
     float fRenderModY = 0;
 
     // Should we keep the aspect ratio?
-    if( bKeepAspect )
+    if (bKeepAspect)
     {
         // Is the horizontal dimension greater than the vertical?
-        if( INTERNAL_RES_X >= INTERNAL_RES_Y )
+        if (INTERNAL_RES_X >= INTERNAL_RES_Y)
         {
             // Try to scale the rendering to the given width
-            fAspectWidth  = (float)nWidth;
+            fAspectWidth = (float)nWidth;
             fAspectHeight = (float)fAspectWidth / aspect;
             fRenderModX = 0;
             fRenderModY = (nHeight - fAspectHeight) / 2.0f;
 
             // Have we scaled beyond the given height
-            if( fAspectHeight > (float)nHeight )
+            if (fAspectHeight > (float)nHeight)
             {
                 // Scale the rendering to the given height
                 fAspectHeight = (float)nHeight;
-                fAspectWidth  = fAspectHeight * aspect;
+                fAspectWidth = fAspectHeight * aspect;
                 fRenderModX = (nWidth - fAspectWidth) / 2.0f;
                 fRenderModY = 0;
             }
@@ -4827,15 +4909,15 @@ void GS_Demo::SetRenderScaling(int nWidth, int nHeight, bool bKeepAspect)
         {
             // Try to scale the rendering to the given height
             fAspectHeight = (float)nHeight;
-            fAspectWidth  = fAspectHeight * aspect;
+            fAspectWidth = fAspectHeight * aspect;
             fRenderModX = (nWidth - fAspectWidth) / 2.0f;
             fRenderModY = 0;
 
             // Have we scaled beyond the given width
-            if( fAspectWidth > (float)nWidth )
+            if (fAspectWidth > (float)nWidth)
             {
                 // Scale the rendering to the given width
-                fAspectWidth  = (float)nWidth;
+                fAspectWidth = (float)nWidth;
                 fAspectHeight = (float)fAspectWidth / aspect;
                 fRenderModX = 0;
                 fRenderModY = (nHeight - fAspectHeight) / 2.0f;
@@ -4848,7 +4930,7 @@ void GS_Demo::SetRenderScaling(int nWidth, int nHeight, bool bKeepAspect)
     GS_OGLDisplay::SetRenderModY(int(fRenderModY));
 
     // Set the scale factor to effect upscaling or downscaling depending on the resolution
-    GS_OGLDisplay::SetScaleFactorX((float)fAspectWidth  / (float)INTERNAL_RES_X);
+    GS_OGLDisplay::SetScaleFactorX((float)fAspectWidth / (float)INTERNAL_RES_X);
     GS_OGLDisplay::SetScaleFactorY((float)fAspectHeight / (float)INTERNAL_RES_Y);
 }
 

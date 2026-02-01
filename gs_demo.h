@@ -10,10 +10,8 @@
  |                                                                                    08/2003 |
  +============================================================================================*/
 
-
 #ifndef GS_DEMO_H
 #define GS_DEMO_H
-
 
 //================================================================================================
 // Include Game System (GS) header files.
@@ -23,7 +21,6 @@
 #include "hero.h"
 //================================================================================================
 
-
 //================================================================================================
 // Include standard C library header files.
 // -----------------------------------------------------------------------------------------------
@@ -31,7 +28,6 @@
 #include <stdio.h>
 #include <time.h>
 //================================================================================================
-
 
 //==============================================================================================
 // Game defines.
@@ -42,78 +38,77 @@
 // ---------------------------------------------------------------------------------------------
 #define INTERNAL_RES_X 960
 #define INTERNAL_RES_Y 540
-#define DEFAULT_WIDTH  960
+#define DEFAULT_WIDTH 960
 #define DEFAULT_HEIGHT 540
-#define DEFAULT_DEPTH  32
-#define DEFAULT_MODE   1
-#define DEFAULT_VSYNC  0
-#define DEFAULT_ALIAS  0
-#define DEFAULT_MUSIC  255
-#define DEFAULT_SOUND  255
+#define DEFAULT_DEPTH 32
+#define DEFAULT_MODE 1
+#define DEFAULT_VSYNC 0
+#define DEFAULT_ALIAS 0
+#define DEFAULT_MUSIC 255
+#define DEFAULT_SOUND 255
 // ---------------------------------------------------------------------------------------------
-#define GAME_INTRO    0
-#define GAME_OUTRO    1
-#define TITLE_INTRO   2
-#define TITLE_SCREEN  3
-#define TITLE_OUTRO   4
-#define OPTION_INTRO  5
+#define GAME_INTRO 0
+#define GAME_OUTRO 1
+#define TITLE_INTRO 2
+#define TITLE_SCREEN 3
+#define TITLE_OUTRO 4
+#define OPTION_INTRO 5
 #define OPTION_SCREEN 6
-#define OPTION_OUTRO  7
-#define PLAY_INTRO    8
-#define PLAY_GAME     9
-#define PLAY_UPDATE   10
-#define PLAY_PAUSE    11
-#define PLAY_EXIT     12
-#define PLAY_OUTRO    13
-#define SCORES_INTRO  14
-#define SCORES_VIEW   15
-#define SCORES_ADD    16
-#define SCORES_OUTRO  17
+#define OPTION_OUTRO 7
+#define PLAY_INTRO 8
+#define PLAY_GAME 9
+#define PLAY_UPDATE 10
+#define PLAY_PAUSE 11
+#define PLAY_EXIT 12
+#define PLAY_OUTRO 13
+#define SCORES_INTRO 14
+#define SCORES_VIEW 15
+#define SCORES_ADD 16
+#define SCORES_OUTRO 17
 // ---------------------------------------------------------------------------------------------
 #define MAX_SCORES 10
 // ---------------------------------------------------------------------------------------------
 #define MUSIC_TITLE 0
-#define MUSIC_GAME  1
+#define MUSIC_GAME 1
 // ---------------------------------------------------------------------------------------------
-#define NUM_HERO_SAMPLES            6
-#define SAMPLE_OPTION               0
-#define SAMPLE_SELECT               1
-#define SAMPLE_VINE_SWOOSH          2
-#define SAMPLE_HERO_JUMP            3
-#define SAMPLE_HERO_DEATH           4
-#define SAMPLE_HERO_DEATH_QUOTE_1   5
-#define SAMPLE_HERO_DEATH_QUOTE_2   6
-#define SAMPLE_HERO_DEATH_QUOTE_3   7
-#define SAMPLE_HERO_HISCORE_QUOTE   8
+#define NUM_HERO_SAMPLES 6
+#define SAMPLE_OPTION 0
+#define SAMPLE_SELECT 1
+#define SAMPLE_VINE_SWOOSH 2
+#define SAMPLE_HERO_JUMP 3
+#define SAMPLE_HERO_DEATH 4
+#define SAMPLE_HERO_DEATH_QUOTE_1 5
+#define SAMPLE_HERO_DEATH_QUOTE_2 6
+#define SAMPLE_HERO_DEATH_QUOTE_3 7
+#define SAMPLE_HERO_HISCORE_QUOTE 8
 // ---------------------------------------------------------------------------------------------
-#define GAME_MODE_EASY   0
+#define GAME_MODE_EASY 0
 #define GAME_MODE_NORMAL 1
-#define GAME_MODE_HARD   2
+#define GAME_MODE_HARD 2
 // ---------------------------------------------------------------------------------------------
-#define MAX_VINES               2
-#define MAX_VINE_ELEMENTS       75
-#define MIN_VINE_ELEMENTS       55
-#define MAX_VINE_SPEED          80
-#define MIN_VINE_SPEED          45
-#define MAX_HERO_SWINGS         10
-#define DEATH_SHAKE_STRENGTH    15
-#define DEATH_SHAKE_LENGTH      20
+#define MAX_VINES 2
+#define MAX_VINE_ELEMENTS 75
+#define MIN_VINE_ELEMENTS 55
+#define MAX_VINE_SPEED 80
+#define MIN_VINE_SPEED 45
+#define MAX_HERO_SWINGS 10
+#define DEATH_SHAKE_STRENGTH 15
+#define DEATH_SHAKE_LENGTH 20
 //==============================================================================================
-
 
 //==============================================================================================
 // Game structures.
 // ---------------------------------------------------------------------------------------------
 typedef struct GS_SETTINGS
 {
-    int  nDisplayWidth;   // The width (in pixels) of the display area for windowed mode
-    int  nDisplayHeight;  // The height (in pixels) of the display area in windowed mode
-    int  nColorDepth;     // The color depth of the display (8, 16, 24 or 32).
+    int nDisplayWidth;    // The width (in pixels) of the display area for windowed mode
+    int nDisplayHeight;   // The height (in pixels) of the display area in windowed mode
+    int nColorDepth;      // The color depth of the display (8, 16, 24 or 32).
     BOOL bWindowedMode;   // Wether game is in fullscreen or windowed mode.
     BOOL bEnableVSync;    // Wether to syncronize rendering with refresh rate.
     BOOL bEnableAliasing; // Wether to enable anti-aliasing or not.
-    int  nMusicVolume;    // The volume of the music (0-255).
-    int  nEffectsVolume;  // The volume of the sound effects (0-255).
+    int nMusicVolume;     // The volume of the music (0-255).
+    int nEffectsVolume;   // The volume of the sound effects (0-255).
 } GS_Settings;
 // ---------------------------------------------------------------------------------------------
 typedef struct GS_HISCORES
@@ -123,24 +118,22 @@ typedef struct GS_HISCORES
 } GS_Hiscores;
 //==============================================================================================
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // Class Definition. ///////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 class GS_Demo : public GS_Application
 {
 
 private:
-
     GS_Settings m_gsSettings; // Option settings.
 
-    GS_Keyboard m_gsKeyboard;  // Keyboard object.
-    GS_Mouse    m_gsMouse;     // Mouse object.
+    GS_Keyboard m_gsKeyboard;     // Keyboard object.
+    GS_Mouse m_gsMouse;           // Mouse object.
+    GS_Controller m_gsController; // Controller object.
 
     GS_OGLDisplay m_gsDisplay; // OpenGL display object.
-    GS_FmodSound  m_gsSound;   // FMOD sound object.
+    GS_FmodSound m_gsSound;    // FMOD sound object.
 
     GS_Timer m_gsTimer; // Timer object.
 
@@ -148,15 +141,15 @@ private:
     GS_OGLSprite m_gsCursorSprite; // Sprite used for the mouse cursor.
     GS_OGLSprite m_gsTitleSprite;  // Sprite used for the title.
 
-    GS_OGLTexture  m_gsFontTexture; // Texture used to create the font end menu.
-    GS_OGLFont     m_gsFont; // Game font.
-    GS_OGLMenu     m_gsMenu; // Game menu.
-    GS_OGLMenu     m_gsHeroSelectMenu; // Hero select menu.
+    GS_OGLTexture m_gsFontTexture; // Texture used to create the font end menu.
+    GS_OGLFont m_gsFont;           // Game font.
+    GS_OGLMenu m_gsMenu;           // Game menu.
+    GS_OGLMenu m_gsHeroSelectMenu; // Hero select menu.
 
     GS_OGLCollide m_gsCollide; // Object for collision detection.
 
-    Vine  m_vines[MAX_VINES];
-    Hero  m_hero;
+    Vine m_vines[MAX_VINES];
+    Hero m_hero;
 
     int m_selectedHero;
     int m_heroSampleIndex;
@@ -185,12 +178,12 @@ private:
     BOOL m_bWasKeyReleased;   // Wether a key has been released.
     BOOL m_bWasMouseReleased; // Wether the left mouse button was released.
 
-    int m_nOldMouseX;        // Previous mouse x coordinate.
-    int m_nOldMouseY;        // Previous mouse y coordinate.
-    int m_nOptionSelected;   // Which menu option was selected.
-    int m_nCounter;          // Used for counting throughout the game.
+    int m_nOldMouseX;      // Previous mouse x coordinate.
+    int m_nOldMouseY;      // Previous mouse y coordinate.
+    int m_nOptionSelected; // Which menu option was selected.
+    int m_nCounter;        // Used for counting throughout the game.
 
-    int m_nFullscreenWidth;  // Fullscreen dimensions.
+    int m_nFullscreenWidth; // Fullscreen dimensions.
     int m_nFullscreenHeight;
 
     float m_fScaleFactorX; // Scaling to fullscreen.
@@ -206,11 +199,10 @@ private:
 
     GS_Hiscores m_gsHiscores[MAX_SCORES]; // Hiscores.
 
-    long m_lScore;      // Keeps track of the game score.
-    int  m_nScoreIndex; // Keeps track of the last score.
+    long m_lScore;     // Keeps track of the game score.
+    int m_nScoreIndex; // Keeps track of the last score.
 
 protected:
-
     // Methods that override base class methods.
     BOOL GameInit();
     BOOL GameShutdown();
@@ -220,7 +212,6 @@ protected:
     void OnChangeMode();
 
 public:
-
     // The constuctor & destructor.
     GS_Demo();
     ~GS_Demo();
@@ -270,6 +261,5 @@ public:
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 #endif
