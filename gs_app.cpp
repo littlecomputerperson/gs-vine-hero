@@ -153,6 +153,20 @@ BOOL GS_Application::Create(int nWidth, int nHeight, int nDepth, BOOL bIsWindowe
         m_hInstance = GetModuleHandle(NULL);
     }
 
+    // Change working directory to the directory containing the executable,
+    // matching the non-Windows platforms' behavior -- otherwise relative
+    // asset/config paths ("data/...", "*.ini") depend on how the process was
+    // launched (e.g. via a shortcut with a different "Start in" folder) and
+    // may not resolve to the packaged data folder that sits next to the exe.
+    {
+        char exeDir[MAX_PATH];
+        GS_Platform::GetCurrentDirectory(MAX_PATH, exeDir);
+        if (exeDir[0] != '\0')
+        {
+            SetCurrentDirectoryA(exeDir);
+        }
+    }
+
     // Were all the required values provided?
     if ((nWidth>0) && (nHeight>0))
     {
@@ -881,9 +895,10 @@ void GS_Application::ShowFrameRate()
 // SDL Implementation
 // ---------------------------------------------------------------------------------------------
 
+#include <unistd.h>
+
 #ifdef __APPLE__
 #include <mach-o/dyld.h>
-#include <unistd.h>
 #include <libgen.h>
 #include <CoreFoundation/CoreFoundation.h>
 #endif
@@ -958,6 +973,22 @@ BOOL GS_Application::Create(int nWidth, int nHeight, int nDepth, BOOL bIsWindowe
             char* dirPath = dirname(exePath);
             chdir(dirPath);
         }
+    }
+#else
+    // On Linux, change working directory to the directory containing the
+    // executable so relative asset/config paths (e.g. "data/...") resolve
+    // consistently regardless of the launching CWD -- notably, AppImages
+    // don't chdir into their AppDir before running the wrapped executable,
+    // so without this the packaged data folder and settings.ini can't be
+    // found unless the AppImage happens to be launched from its own directory.
+    char* basePath = SDL_GetBasePath();
+    if (basePath)
+    {
+        if (chdir(basePath) != 0)
+        {
+            GS_Error::Report("GS_APP.CPP", 986, "Failed to change working directory to executable path!");
+        }
+        SDL_free(basePath);
     }
 #endif
 
@@ -1140,7 +1171,7 @@ INT GS_Application::Run()
                 if (event.text.text[0] != '\0')
                 {
                     unsigned char ch = (unsigned char)event.text.text[0];
-                    MsgProc(NULL, WM_CHAR, ch, 0);
+                    MsgProc((HWND)m_pWindow, WM_CHAR, ch, 0);
                 }
             }
             else if (event.type == SDL_KEYDOWN)
@@ -1149,7 +1180,7 @@ INT GS_Application::Run()
                 int gskKey = GS_Keyboard::MapSDLKey(event.key.keysym.scancode);
                 if (gskKey != GSK_NONE)
                 {
-                    MsgProc(NULL, WM_KEYDOWN, gskKey, 0);
+                    MsgProc((HWND)m_pWindow, WM_KEYDOWN, gskKey, 0);
                     
                     // For special keys that don't generate SDL_TEXTINPUT, simulate WM_CHAR
                     if (event.key.keysym.sym == SDLK_RETURN ||
@@ -1158,7 +1189,7 @@ INT GS_Application::Run()
                         event.key.keysym.sym == SDLK_TAB ||
                         event.key.keysym.sym == SDLK_DELETE)
                     {
-                        MsgProc(NULL, WM_CHAR, gskKey, 0);
+                        MsgProc((HWND)m_pWindow, WM_CHAR, gskKey, 0);
                     }
                 }
             }
@@ -1168,7 +1199,7 @@ INT GS_Application::Run()
                 int gskKey = GS_Keyboard::MapSDLKey(event.key.keysym.scancode);
                 if (gskKey != GSK_NONE)
                 {
-                    MsgProc(NULL, WM_KEYUP, gskKey, 0);
+                    MsgProc((HWND)m_pWindow, WM_KEYUP, gskKey, 0);
                 }
             }
             else if (event.type == SDL_CONTROLLERDEVICEADDED)
@@ -1211,7 +1242,7 @@ INT GS_Application::Run()
                 if (gscButton != -1)
                 {
                     // Send as WM_KEYDOWN with the GSC button code
-                    MsgProc(NULL, WM_KEYDOWN, gscButton, 0);
+                    MsgProc((HWND)m_pWindow, WM_KEYDOWN, gscButton, 0);
                 }
             }
             else if (event.type == SDL_CONTROLLERBUTTONUP)
@@ -1240,7 +1271,7 @@ INT GS_Application::Run()
                 if (gscButton != -1)
                 {
                     // Send as WM_KEYUP with the GSC button code
-                    MsgProc(NULL, WM_KEYUP, gscButton, 0);
+                    MsgProc((HWND)m_pWindow, WM_KEYUP, gscButton, 0);
                 }
             }
             else if (event.type == SDL_CONTROLLERAXISMOTION)
@@ -1274,25 +1305,25 @@ INT GS_Application::Run()
             else if (event.type == SDL_MOUSEMOTION)
             {
                 // Pass SDL_MOUSEMOTION to MsgProc as WM_MOUSEMOVE
-                MsgProc(NULL, WM_MOUSEMOVE, 0, (event.motion.x & 0xFFFF) | (event.motion.y << 16));
+                MsgProc((HWND)m_pWindow, WM_MOUSEMOVE, 0, (event.motion.x & 0xFFFF) | (event.motion.y << 16));
             }
             else if (event.type == SDL_MOUSEBUTTONDOWN)
             {
                 if (event.button.button == SDL_BUTTON_LEFT)
-                    MsgProc(NULL, WM_LBUTTONDOWN, 0, 0);
+                    MsgProc((HWND)m_pWindow, WM_LBUTTONDOWN, 0, 0);
                 else if (event.button.button == SDL_BUTTON_RIGHT)
-                    MsgProc(NULL, WM_RBUTTONDOWN, 0, 0);
+                    MsgProc((HWND)m_pWindow, WM_RBUTTONDOWN, 0, 0);
                 else if (event.button.button == SDL_BUTTON_MIDDLE)
-                    MsgProc(NULL, WM_MBUTTONDOWN, 0, 0);
+                    MsgProc((HWND)m_pWindow, WM_MBUTTONDOWN, 0, 0);
             }
             else if (event.type == SDL_MOUSEBUTTONUP)
             {
                 if (event.button.button == SDL_BUTTON_LEFT)
-                    MsgProc(NULL, WM_LBUTTONUP, 0, 0);
+                    MsgProc((HWND)m_pWindow, WM_LBUTTONUP, 0, 0);
                 else if (event.button.button == SDL_BUTTON_RIGHT)
-                    MsgProc(NULL, WM_RBUTTONUP, 0, 0);
+                    MsgProc((HWND)m_pWindow, WM_RBUTTONUP, 0, 0);
                 else if (event.button.button == SDL_BUTTON_MIDDLE)
-                    MsgProc(NULL, WM_MBUTTONUP, 0, 0);
+                    MsgProc((HWND)m_pWindow, WM_MBUTTONUP, 0, 0);
             }
         }
 
