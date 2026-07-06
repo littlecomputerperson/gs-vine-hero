@@ -483,7 +483,10 @@ Copy SDL2.dll and SDL2_mixer.dll to the executable directory.
 
 _The current version number is set by `GAME_VERSION` in [`gs_demo.h`](gs_demo.h)._
 
-**v0.0.11** (Current - Prototype)
+**v0.0.12** (Current - Prototype)
+- Fixed ini/hiscore files not loading or saving when launched from a directory other than the executable's own
+
+**v0.0.11** (Prototype)
 - Core vine swinging mechanics
 - Two playable heroes
 - Three difficulty levels
