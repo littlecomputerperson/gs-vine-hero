@@ -481,7 +481,9 @@ Copy SDL2.dll and SDL2_mixer.dll to the executable directory.
 
 ## Version History
 
-**v0.0.10** (Current - Prototype)
+_The current version number is set by `GAME_VERSION` in [`gs_demo.h`](gs_demo.h)._
+
+**v0.0.11** (Current - Prototype)
 - Core vine swinging mechanics
 - Two playable heroes
 - Three difficulty levels

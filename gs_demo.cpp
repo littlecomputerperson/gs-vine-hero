@@ -1531,7 +1531,7 @@ BOOL GS_Demo::TitleScreen()
 
     // Display the version number at the bottom right of the screen.
     m_gsFont.SetModulateColor(-1.0f, -1.0f, -1.0f, 0.25f);
-    m_gsFont.SetText("VERSION %s", VINE_HERO_VERSION);
+    m_gsFont.SetText("VERSION %s", GAME_VERSION);
     m_gsFont.SetScaleXY(0.5f, 0.5f);
     m_gsFont.SetDestX(INTERNAL_RES_X - m_gsFont.GetTextWidth() - m_gsFont.GetLetterWidth());
     m_gsFont.SetDestY(m_gsFont.GetTextHeight());
