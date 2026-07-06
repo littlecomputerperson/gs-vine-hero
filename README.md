@@ -483,7 +483,10 @@ Copy SDL2.dll and SDL2_mixer.dll to the executable directory.
 
 _The current version number is set by `GAME_VERSION` in [`gs_demo.h`](gs_demo.h)._
 
-**v0.0.12** (Current - Prototype)
+**v0.0.13** (Current - Prototype)
+- Fixed Windows builds failing to play MP3 music ("Unrecognized audio format") by enabling vcpkg's mpg123 codec feature
+
+**v0.0.12** (Prototype)
 - Fixed ini/hiscore files not loading or saving when launched from a directory other than the executable's own
 
 **v0.0.11** (Prototype)
